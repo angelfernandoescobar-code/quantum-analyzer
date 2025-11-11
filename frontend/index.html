@@ -211,13 +211,13 @@
         onclick="showTab('upload')" 
         id="tab-upload" 
         class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-active">
-        📁 Subir Examen
+        Subir Examen
       </button>
       <button 
         onclick="showTab('history')" 
         id="tab-history" 
         class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-inactive">
-        📋 Historial
+        Historial
       </button>
     </div>
 
@@ -255,7 +255,7 @@
           onclick="analyze()" 
           id="analyze-btn" 
           class="btn-primary w-full px-10 py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
-          <span>🚀</span>
+          <span>Rocket</span>
           <span>Analizar con IA</span>
         </button>
       </div>
@@ -270,7 +270,7 @@
   </div>
 
   <script>
-    // URL DINÁMICA: funciona en localhost y en Render
+    // URL DINÁMICA
     const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:5000/api'
       : 'https://quantum-analyzer.onrender.com/api';
@@ -295,7 +295,7 @@
     async function analyze() {
       const file = document.getElementById('zipFile').files[0];
       if (!file) {
-        alert('⚠️ Por favor selecciona un archivo ZIP');
+        alert('Por favor selecciona un archivo ZIP');
         return;
       }
 
@@ -307,12 +307,12 @@
 
       let progress = 0;
       const messages = [
-        '🔍 Extrayendo archivos del ZIP...',
-        '📊 Leyendo datos del paciente...',
-        '🧬 Analizando parámetros bioquímicos...',
-        '⚕️ Evaluando sistemas orgánicos...',
-        '🤖 Generando recomendaciones con IA...',
-        '✨ Finalizando análisis detallado...'
+        'Extrayendo archivos del ZIP...',
+        'Leyendo datos del paciente...',
+        'Analizando parámetros bioquímicos...',
+        'Evaluando sistemas orgánicos...',
+        'Generando recomendaciones con IA...',
+        'Finalizando análisis detallado...'
       ];
       
       const interval = setInterval(() => {
@@ -331,7 +331,7 @@
         
         clearInterval(interval);
         document.getElementById('progress-fill').style.width = '100%';
-        document.getElementById('progress-text').textContent = '✅ Análisis completado con éxito';
+        document.getElementById('progress-text').textContent = 'Análisis completado con éxito';
         
         setTimeout(() => {
           document.getElementById('progress-container').classList.add('hidden');
@@ -345,28 +345,34 @@
         clearInterval(interval);
         document.getElementById('progress-container').classList.add('hidden');
         document.getElementById('analyze-btn').disabled = false;
-        alert('❌ Error: ' + (err.response?.data?.error || err.message));
+        alert('Error: ' + (err.response?.data?.error || err.message));
       }
     }
 
     function displayDetailedReport(data) {
-      const p = data.patientInfo;
-      const ai = data.aiAnalysis;
+      const p = data.patientInfo || {};
+      const ai = data.aiAnalysis || {};
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
-      // EMOJIS DE VUELTA - Arreglado
+      // 12 SISTEMAS COMPLETOS
       const sistemas = [
-        { key: 'hepatico', title: 'Sistema Hepático', icon: '🔬' },
-        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: '❤️' },
-        { key: 'oseo', title: 'Sistema Óseo', icon: '🦴' },
-        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: '🛡️' },
-        { key: 'endocrino', title: 'Sistema Endocrino', icon: '⚖️' },
-        { key: 'digestivo', title: 'Sistema Digestivo', icon: '🍽️' },
-        { key: 'otros', title: 'Otros Sistemas', icon: '🔍' }
+        { key: 'hepatico', title: 'Sistema Hepático', icon: 'Liver' },
+        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Heart' },
+        { key: 'renal', title: 'Sistema Renal', icon: 'Kidney' },
+        { key: 'endocrino', title: 'Sistema Endocrino', icon: 'Balance' },
+        { key: 'digestivo', title: 'Sistema Digestivo', icon: 'Stomach' },
+        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: 'Shield' },
+        { key: 'oseo', title: 'Sistema Óseo', icon: 'Bone' },
+        { key: 'nervioso', title: 'Sistema Nervioso', icon: 'Brain' },
+        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: 'Lungs' },
+        { key: 'muscular', title: 'Sistema Muscular', icon: 'Muscle' },
+        { key: 'hematologico', title: 'Sistema Hematológico', icon: 'Blood' },
+        { key: 'otros', title: 'Otros Sistemas', icon: 'Search' }
       ];
 
-      const imcStatus = p.imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
-                       p.imc < 18.5 ? { text: 'Bajo peso', color: 'text-orange-400' } : 
+      const imc = p.imc ? parseFloat(p.imc) : 0;
+      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
+                       imc < 18.5 ? { text: 'Bajo peso', color: 'text-orange-400' } : 
                        { text: 'Normal', color: 'text-green-400' };
 
       document.getElementById('results').innerHTML = `
@@ -375,44 +381,41 @@
           <!-- HEADER RESULT -->
           <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h3 class="text-4xl font-bold text-white mb-2">${data.fileName}</h3>
-              <p class="text-slate-400">📅 ${new Date().toLocaleDateString('es', { 
-                year: 'numeric', month: 'long', day: 'numeric', 
-                hour: '2-digit', minute: '2-digit' 
-              })}</p>
+              <h3 class="text-4xl font-bold text-white mb-2">${data.fileName || 'Informe'}</h3>
+              <p class="text-slate-400">11 de noviembre de 2025, ${new Date().toLocaleTimeString('es-HN', { hour: '2-digit', minute: '2-digit' })}</p>
             </div>
             <div class="risk-badge ${riskClass}">
-              Riesgo ${ai.riesgo}
+              Riesgo ${ai.riesgo || 'N/A'}
             </div>
           </div>
 
           <!-- PATIENT INFO -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">👤 Información del Paciente</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
-                <p class="font-bold text-white text-lg">${p.nombre}</p>
+                <p class="font-bold text-white text-lg">${p.nombre || 'No especificado'}</p>
               </div>
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Edad</p>
-                <p class="font-bold text-white text-lg">${p.edad} años</p>
+                <p class="font-bold text-white text-lg">${p.edad ? p.edad + ' años' : 'N/A'}</p>
               </div>
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Sexo</p>
-                <p class="font-bold text-white text-lg">${p.sexo}</p>
+                <p class="font-bold text-white text-lg">${p.sexo || 'N/A'}</p>
               </div>
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Peso</p>
-                <p class="font-bold text-white text-lg">${p.peso} kg</p>
+                <p class="font-bold text-white text-lg">${p.peso ? p.peso + ' kg' : 'N/A'}</p>
               </div>
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Estatura</p>
-                <p class="font-bold text-white text-lg">${p.estatura} cm</p>
+                <p class="font-bold text-white text-lg">${p.estatura ? p.estatura + ' cm' : 'N/A'}</p>
               </div>
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">IMC</p>
-                <p class="font-bold ${imcStatus.color} text-lg">${p.imc}</p>
+                <p class="font-bold ${imcStatus.color} text-lg">${p.imc || 'N/A'}</p>
                 <p class="text-xs ${imcStatus.color} mt-1">${imcStatus.text}</p>
               </div>
             </div>
@@ -420,40 +423,43 @@
 
           <!-- SUMMARY -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">📋 Resumen General</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
             <div class="card p-8 rounded-2xl">
-              <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen}</p>
+              <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen || 'No se generó resumen.'}</p>
             </div>
           </div>
 
           <!-- SYSTEMS -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">🏥 Análisis por Sistemas</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
             <div class="space-y-6">
-              ${sistemas.map(s => `
-                <div class="system-section p-8 rounded-xl">
-                  <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
-                    <span class="text-2xl">${s.icon}</span>
-                    <span>${s.title}</span>
-                  </h5>
-                  <p class="text-slate-200 leading-relaxed whitespace-pre-line">${ai.analisis_por_sistemas[s.key]}</p>
-                </div>
-              `).join('')}
+              ${sistemas.map(s => {
+                const texto = ai.analisis_por_sistemas?.[s.key] || 'No se detectaron alteraciones significativas en este sistema.';
+                return `
+                  <div class="system-section p-8 rounded-xl">
+                    <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
+                      <span class="text-2xl">${s.icon}</span>
+                      <span>${s.title}</span>
+                    </h5>
+                    <p class="text-slate-200 leading-relaxed whitespace-pre-line">${texto}</p>
+                  </div>
+                `;
+              }).join('')}
             </div>
           </div>
 
           <!-- 4LIFE -->
           <div>
-            <h4 class="text-2xl font-bold text-amber-400 mb-6">💊 Plan de Suplementación 4Life Research</h4>
+            <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
             <div class="fourlife-section p-8 rounded-xl">
               <p class="text-amber-200 text-sm mb-6 font-medium">Protocolo completo de tratamiento - 3 meses</p>
               <ul class="space-y-4">
-                ${ai.recomendaciones_4life.map(r => `
+                ${(ai.recomendaciones_4life || []).map(r => `
                   <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
-                    <span class="text-amber-400 font-bold text-lg flex-shrink-0">●</span>
+                    <span class="text-amber-400 font-bold text-lg flex-shrink-0">•</span>
                     <span class="text-slate-100 leading-relaxed">${r}</span>
                   </li>
-                `).join('')}
+                `).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
               </ul>
             </div>
           </div>
@@ -470,7 +476,7 @@
         if (res.data.length === 0) {
           list.innerHTML = `
             <div class="col-span-full text-center card p-20 rounded-2xl">
-              <div class="text-6xl mb-6 opacity-20">📭</div>
+              <div class="text-6xl mb-6 opacity-20">Empty Mailbox</div>
               <h3 class="text-2xl font-bold text-slate-400 mb-2">No hay análisis previos</h3>
               <p class="text-slate-500">Los exámenes que analices aparecerán aquí</p>
             </div>
@@ -479,8 +485,8 @@
         }
         
         list.innerHTML = res.data.map(exam => {
-          const riskClass = exam.aiAnalysis.riesgo === 'ALTO' ? 'risk-alto' : 
-                           exam.aiAnalysis.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
+          const riskClass = exam.aiAnalysis?.riesgo === 'ALTO' ? 'risk-alto' : 
+                           exam.aiAnalysis?.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
           
           return `
             <div class="card p-6 rounded-xl history-card" onclick="loadDetailedReport('${exam._id}')">
@@ -488,13 +494,13 @@
                 <div class="flex-1">
                   <h4 class="font-bold text-xl text-cyan-400 mb-2 line-clamp-1">${exam.fileName}</h4>
                   <p class="text-sm text-slate-400">
-                    📅 ${new Date(exam.createdAt).toLocaleDateString('es', { 
+                    ${new Date(exam.createdAt).toLocaleDateString('es', { 
                       year: 'numeric', month: 'short', day: 'numeric' 
                     })}
                   </p>
                 </div>
                 <div class="risk-badge ${riskClass} text-xs ml-4">
-                  ${exam.aiAnalysis.riesgo}
+                  ${exam.aiAnalysis?.riesgo || 'N/A'}
                 </div>
               </div>
               <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-all mt-4">
@@ -506,7 +512,7 @@
       } catch (err) {
         document.getElementById('history-list').innerHTML = `
           <div class="col-span-full text-center card p-20 rounded-2xl">
-            <div class="text-6xl mb-6">⚠️</div>
+            <div class="text-6xl mb-6">Warning</div>
             <h3 class="text-2xl font-bold text-slate-400">Error al cargar historial</h3>
           </div>
         `;
@@ -522,7 +528,7 @@
           document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       } catch (err) { 
-        alert('❌ Error al cargar el análisis'); 
+        alert('Error al cargar el análisis'); 
       }
     }
 
