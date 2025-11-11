@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "multer": "^2.0.2",
+    "openai": "^6.8.1",
+    "puppeteer": "^24.29.1",
+    "unzipper": "^0.12.3"
+  }
+}

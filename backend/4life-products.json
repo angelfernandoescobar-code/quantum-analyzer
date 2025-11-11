@@ -1,0 +1,562 @@
+{
+  "4Life Transfer Factor Plus Tri-Factor Formula": {
+    "categoria": "Inmunidad Premium",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["inmunológico", "inflamación"],
+    "beneficio": "Respaldo más potente para 4 tipos de células inmunes (NK, T, B, macrófagos)"
+  },
+  "4Life Transfer Factor Tri-Factor Formula": {
+    "categoria": "Inmunidad Core",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["inmunológico"],
+    "beneficio": "Respalda 3 tipos de células inmunes (NK, T, B)"
+  },
+  "4Life Transfer Factor Classic": {
+    "categoria": "Inmunidad Básica",
+    "forma": "cápsulas",
+    "dosis": "3 cápsulas al día",
+    "sistemas": ["inmunológico"],
+    "beneficio": "Respaldo fundamental para células NK"
+  },
+  "4Life Transfer Factor Chewable Tri-Factor Formula": {
+    "categoria": "Inmunidad Masticable",
+    "forma": "tabletas masticables",
+    "dosis": "1-2 tabletas al día",
+    "sistemas": ["inmunológico"],
+    "beneficio": "Sabor cítrico cremoso con activación en 2 horas"
+  },
+  "4Life Transfer Factor Immune Boost": {
+    "categoria": "Inmunidad Rápida",
+    "forma": "sobre (polvo soluble)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["inmunológico", "antioxidante"],
+    "beneficio": "1000mg vitamina C + 1000mg Transfer Factor + electrolitos"
+  },
+  "4Life Transfer Factor Immune Spray": {
+    "categoria": "Inmunidad Tópica",
+    "forma": "spray oral",
+    "dosis": "3 sprays 3 veces al día",
+    "sistemas": ["inmunológico", "respiratorio"],
+    "beneficio": "Spray sublingual con plata coloidal y zinc (menta/naranja)"
+  },
+  "4Life Transfer Factor RioVida Tri-Factor Formula": {
+    "categoria": "Inmunidad Líquida",
+    "forma": "líquido",
+    "dosis": "30ml (1 fl oz) al día",
+    "sistemas": ["inmunológico", "antioxidante"],
+    "beneficio": "Transfer Factor líquido con superfrutas (açaí, granada, arándano)"
+  },
+  "4Life Transfer Factor RioVida Stix Tri-Factor Formula": {
+    "categoria": "Inmunidad Portátil",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["inmunológico", "antioxidante"],
+    "beneficio": "RioVida en polvo portátil con 600mg Transfer Factor"
+  },
+  "4Life Transfer Factor RioVida Burst Tri-Factor Formula": {
+    "categoria": "Inmunidad Gel",
+    "forma": "gel suave (paquetito)",
+    "dosis": "1 paquete al día",
+    "sistemas": ["inmunológico", "antioxidante"],
+    "beneficio": "Gel con superfrutas, ideal para +4 años"
+  },
+  "4Life Transfer Factor RioVida Chews Tri-Factor Formula": {
+    "categoria": "Inmunidad Masticable",
+    "forma": "cubitos masticables",
+    "dosis": "1-2 cubitos al día",
+    "sistemas": ["inmunológico", "antioxidante"],
+    "beneficio": "Sabor frutos rojos, para +4 años"
+  },
+  "4Life Transfer Factor AgePro": {
+    "categoria": "Longevidad",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["longevidad", "NAD+", "inmunidad"],
+    "beneficio": "NMN para incrementar NAD+ y envejecimiento celular saludable"
+  },
+  "4Life Transfer Factor Cardio": {
+    "categoria": "Salud Cardiovascular",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["cardiovascular"],
+    "beneficio": "Nueva fórmula con CoQ10, ajo, arroz rojo fermentado"
+  },
+  "4Life Transfer Factor Colágeno (fresa y mango)": {
+    "categoria": "Piel y Articulaciones",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["piel", "articulaciones", "músculos"],
+    "beneficio": "5 tipos de colágeno (I, II, III, V, X) con vitaminas A, C, E"
+  },
+  "4Life Transfer Factor Colágeno Tipo I (sin sabor)": {
+    "categoria": "Piel y Belleza",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["piel", "uñas", "cabello"],
+    "beneficio": "Colágeno tipo I para elasticidad y humectación de piel"
+  },
+  "4Life Transfer Factor ReCall": {
+    "categoria": "Salud Cognitiva",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["cerebral", "memoria"],
+    "beneficio": "Ginkgo biloba, Bacopa, Huperzia para memoria y circulación"
+  },
+  "4Life Transfer Factor Reflexion": {
+    "categoria": "Estrés y Ánimo",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["nervioso", "estrés", "concentración"],
+    "beneficio": "Avena verde y L-teanina para manejo de estrés y enfoque"
+  },
+  "4Life Transfer Factor SleepRite": {
+    "categoria": "Sueño",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas antes de dormir",
+    "sistemas": ["sueño", "relajación"],
+    "beneficio": "GABA, ashwagandha, melatonina de liberación sostenida"
+  },
+  "4Life Transfer Factor Vista": {
+    "categoria": "Salud Ocular",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["ocular"],
+    "beneficio": "Luteína, zeaxantina, arándano para protección visual"
+  },
+  "4Life Transfer Factor Lung": {
+    "categoria": "Salud Respiratoria",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["pulmonar", "respiratorio"],
+    "beneficio": "Tomillo, ginseng, brócoli, NAC para desintoxicación pulmonar"
+  },
+  "4Life Transfer Factor KBU": {
+    "categoria": "Salud Urinaria",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas 2 veces al día",
+    "sistemas": ["urinario", "riñones", "vejiga"],
+    "beneficio": "Arándano, D-manosa, chanca piedra para tracto urinario"
+  },
+  "4Life Transfer Factor Metabolite": {
+    "categoria": "Tiroides",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["tiroideo", "metabolismo"],
+    "beneficio": "Yodo de kelp para función tiroidea saludable"
+  },
+  "4Life Transfer Factor Glucoach": {
+    "categoria": "Glucosa",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas 2 veces al día",
+    "sistemas": ["glucosa", "endocrino"],
+    "beneficio": "Cromo, gymnema, fenogreco para niveles saludables de glucosa"
+  },
+  "4Life Transfer Factor MalePro": {
+    "categoria": "Salud Masculina",
+    "forma": "cápsulas blandas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["próstata", "hormonal masculino"],
+    "beneficio": "Saw palmetto, licopeno, zinc para salud prostática"
+  },
+  "4Life Transfer Factor Belle Vie": {
+    "categoria": "Salud Femenina",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["hormonal femenino", "reproductivo"],
+    "beneficio": "Fitoestrógenos, indoles, té verde para equilibrio hormonal"
+  },
+  "4Life Transfer Factor RenewAll": {
+    "categoria": "Cuidado Tópico",
+    "forma": "gel tópico",
+    "dosis": "aplicar según necesidad",
+    "sistemas": ["piel"],
+    "beneficio": "Gel con Transfer Factor, aloe, lavanda para la piel"
+  },
+  "4Life Transfer Factor Renuvo": {
+    "categoria": "Adaptógenos",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas 2 veces al día",
+    "sistemas": ["estrés", "recuperación", "energía"],
+    "beneficio": "Adaptógeno patentado con Rhaponticum, Schisandra, ashwagandha"
+  },
+  "4Life NanoFactor Glutamine Prime": {
+    "categoria": "Energía Celular",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["inmunológico", "digestivo", "energía"],
+    "beneficio": "L-glutamina con NanoFactor para energía de células inmunes"
+  },
+  "Pro-TF Chocolate": {
+    "categoria": "Proteína Premium",
+    "forma": "polvo",
+    "dosis": "2 scoops al día",
+    "sistemas": ["muscular", "inmunológico", "peso"],
+    "beneficio": "20g proteína hidrolizada + 600mg Transfer Factor"
+  },
+  "Pro-TF Vainilla": {
+    "categoria": "Proteína Premium",
+    "forma": "polvo",
+    "dosis": "2 scoops al día",
+    "sistemas": ["muscular", "inmunológico", "peso"],
+    "beneficio": "20g proteína hidrolizada + 600mg Transfer Factor"
+  },
+  "4LifeTransform Burn": {
+    "categoria": "Quema Grasa",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas antes de comida",
+    "sistemas": ["peso", "metabolismo"],
+    "beneficio": "Naranja amarga, Coleus forskohlii, mango africano termogénico"
+  },
+  "4LifeTransform PreZoom": {
+    "categoria": "Pre-Entrenamiento",
+    "forma": "polvo",
+    "dosis": "1 sobre antes de ejercicio",
+    "sistemas": ["energía", "rendimiento", "muscular"],
+    "beneficio": "Beta-alanina, creatina, BCAA, té verde para rendimiento"
+  },
+  "4LifeTransform Protein Bar": {
+    "categoria": "Nutrición Deportiva",
+    "forma": "barra",
+    "dosis": "1 barra como snack",
+    "sistemas": ["muscular", "proteína"],
+    "beneficio": "Barra chocolate-maní con Transfer Factor, 190 calorías"
+  },
+  "4LifeTransform Hombre": {
+    "categoria": "Vitalidad Masculina",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["energía", "muscular", "hormonal"],
+    "beneficio": "L-citrulina, ginseng para masa muscular y vitalidad"
+  },
+  "4LifeTransform Mujer": {
+    "categoria": "Vitalidad Femenina",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["energía", "piel", "hormonal"],
+    "beneficio": "L-citrulina, onagra, Mucuna pruriens para óxido nítrico"
+  },
+  "ShapeRite": {
+    "categoria": "Control Peso",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas antes de comidas",
+    "sistemas": ["peso", "digestivo"],
+    "beneficio": "Quitosano, frijol blanco para bloquear grasas y carbohidratos"
+  },
+  "RiteStart Mujer": {
+    "categoria": "Multivitamínico Premium Mujer",
+    "forma": "paquetes diarios",
+    "dosis": "2 paquetes al día",
+    "sistemas": ["inmunológico", "hormonal", "óseo", "cardiovascular"],
+    "beneficio": "Transfer Factor Plus + omega + vitaminas específicas mujer"
+  },
+  "RiteStart Hombre": {
+    "categoria": "Multivitamínico Premium Hombre",
+    "forma": "paquetes diarios",
+    "dosis": "2 paquetes al día",
+    "sistemas": ["inmunológico", "próstata", "óseo", "cardiovascular"],
+    "beneficio": "Transfer Factor Plus + omega + vitaminas específicas hombre"
+  },
+  "RiteStart Niños y Adolescentes": {
+    "categoria": "Multivitamínico Infantil",
+    "forma": "tabletas masticables",
+    "dosis": "2-4 tabletas según edad",
+    "sistemas": ["inmunológico", "crecimiento", "cerebral"],
+    "beneficio": "300-600mg Transfer Factor + 22 vitaminas, sabor manzana/cítrico"
+  },
+  "NutraStart Blue Vanilla": {
+    "categoria": "Nutrición Completa",
+    "forma": "polvo (batido)",
+    "dosis": "1 porción al día",
+    "sistemas": ["nutrición general", "peso", "inmunológico"],
+    "beneficio": "Macro y micronutrientes + Transfer Factor + espirulina azul"
+  },
+  "Energy Go Stix Moras": {
+    "categoria": "Energía",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["energía"],
+    "beneficio": "Aminoácidos, yerba mate, 3 ginsengs, té verde con Transfer Factor"
+  },
+  "Energy Go Stix Naranja cítrica": {
+    "categoria": "Energía",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["energía"],
+    "beneficio": "Aminoácidos, yerba mate, 3 ginsengs, té verde con Transfer Factor"
+  },
+  "Energy Go Stix Limonada rosa": {
+    "categoria": "Energía",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["energía"],
+    "beneficio": "Aminoácidos, yerba mate, 3 ginsengs, té verde con Transfer Factor"
+  },
+  "Energy Go Stix Kiwi y fresa": {
+    "categoria": "Energía",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["energía"],
+    "beneficio": "Aminoácidos, yerba mate, 3 ginsengs, té verde con Transfer Factor"
+  },
+  "Energy Go Stix Tropical": {
+    "categoria": "Energía",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["energía"],
+    "beneficio": "Aminoácidos, yerba mate, 3 ginsengs, té verde con Transfer Factor"
+  },
+  "Pre/o Biotics": {
+    "categoria": "Salud Digestiva",
+    "forma": "sobre (microesferas)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["digestivo", "inmunológico"],
+    "beneficio": "5 cepas probióticas + prebióticos + Transfer Factor en microesferas"
+  },
+  "Sistema de Restauración Digest4Life": {
+    "categoria": "Limpieza Digestiva Completa",
+    "forma": "sistema (múltiples productos)",
+    "dosis": "seguir guía del sistema",
+    "sistemas": ["digestivo", "hepático", "inmunológico"],
+    "beneficio": "Sistema completo de 10 días: limpieza, desintoxicación, restauración"
+  },
+  "Fibre System Plus": {
+    "categoria": "Fibra y Limpieza",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre 30min antes de comida principal",
+    "sistemas": ["digestivo"],
+    "beneficio": "20+ ingredientes herbarios para limpieza intestinal de 10 días"
+  },
+  "Super Detox": {
+    "categoria": "Desintoxicación Hepática",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["hepático"],
+    "beneficio": "Cardo lechoso, trébol rojo, alcachofa, NAC para hígado"
+  },
+  "PhytoLax": {
+    "categoria": "Laxante Natural",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas por la noche",
+    "sistemas": ["digestivo"],
+    "beneficio": "Cáscara sagrada, jengibre para regularidad natural"
+  },
+  "Tea4Life": {
+    "categoria": "Té Digestivo",
+    "forma": "bolsitas de té",
+    "dosis": "1 bolsita al día",
+    "sistemas": ["digestivo"],
+    "beneficio": "Senna, canela, manzana para limpieza y regularidad"
+  },
+  "Digestive Enzymes": {
+    "categoria": "Enzimas Digestivas",
+    "forma": "cápsulas",
+    "dosis": "1-2 cápsulas con comidas",
+    "sistemas": ["digestivo"],
+    "beneficio": "18+ enzimas para digestión completa de alimentos"
+  },
+  "Aloe Vera Stix": {
+    "categoria": "Aloe Digestivo",
+    "forma": "sobre (polvo)",
+    "dosis": "1 sobre al día",
+    "sistemas": ["digestivo"],
+    "beneficio": "Aloe vera en polvo para recuperación digestiva"
+  },
+  "Gold Factor": {
+    "categoria": "Oro Coloidal",
+    "forma": "líquido",
+    "dosis": "según indicaciones",
+    "sistemas": ["articulaciones", "cerebral", "celular"],
+    "beneficio": "Nanopartículas de oro para articulaciones y memoria"
+  },
+  "Zinc Factor": {
+    "categoria": "Zinc y Plata Iónica",
+    "forma": "líquido",
+    "dosis": "según indicaciones",
+    "sistemas": ["inmunológico"],
+    "beneficio": "Zinc iónico + plata coloidal para respaldo inmune"
+  },
+  "Essential Fatty Acid Complex": {
+    "categoria": "Ácidos Grasos",
+    "forma": "cápsulas blandas",
+    "dosis": "2 cápsulas con comida",
+    "sistemas": ["cardiovascular", "cerebral"],
+    "beneficio": "Omega 3-6-9 + CLA de pescado, linaza, borraja"
+  },
+  "Life C Chewable": {
+    "categoria": "Vitamina C",
+    "forma": "tabletas masticables",
+    "dosis": "2 tabletas al día",
+    "sistemas": ["antioxidante", "inmunológico"],
+    "beneficio": "7 formas activas de vitamina C natural"
+  },
+  "Fortified Colostrum": {
+    "categoria": "Calostro",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["inmunológico", "digestivo", "respiratorio"],
+    "beneficio": "Calostro bovino con lactoferrina para +4 años"
+  },
+  "Multiplex": {
+    "categoria": "Multivitamínico Básico",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["general"],
+    "beneficio": "Vitaminas y minerales esenciales con hierbas"
+  },
+  "4Life Fortify": {
+    "categoria": "Nutrición Humanitaria",
+    "forma": "bolsa (comida)",
+    "dosis": "variable",
+    "sistemas": ["nutrición general"],
+    "beneficio": "12-24 comidas con Transfer Factor para donación (Feed the Children)"
+  },
+  "BioGenistein Ultra": {
+    "categoria": "Balance Hormonal Femenino",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["hormonal femenino", "ánimo"],
+    "beneficio": "Isoflavonas de soya, cohosh negro, vitex para equilibrio"
+  },
+  "Cal-Mag Complex": {
+    "categoria": "Salud Ósea",
+    "forma": "tabletas",
+    "dosis": "2 tabletas al día",
+    "sistemas": ["óseo"],
+    "beneficio": "600mg calcio + 400 IU vitamina D + 270mg magnesio"
+  },
+  "Fibro AMJ Fórmula Diurna": {
+    "categoria": "Articulaciones",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["articulaciones", "muscular"],
+    "beneficio": "Glucosamina, MSM, Boswellia, magnesio, B6"
+  },
+  "Flex4Life": {
+    "categoria": "Movilidad Articular",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["articulaciones", "movilidad"],
+    "beneficio": "Terminalia chebula, ácido hialurónico, cúrcuma para rodillas"
+  },
+  "Gurmar": {
+    "categoria": "Control Glucosa",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["glucosa", "endocrino"],
+    "beneficio": "Gymnema sylvestre ayurvédica para glucosa saludable"
+  },
+  "MusculoSkeletal Formula": {
+    "categoria": "Soporte Músculo-Esquelético",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas al día",
+    "sistemas": ["muscular", "óseo", "conectivo"],
+    "beneficio": "Alfalfa, gotu kola, devil's claw, cúrcuma para reparación"
+  },
+  "Stress Formula": {
+    "categoria": "Manejo Estrés",
+    "forma": "cápsulas",
+    "dosis": "2 cápsulas por la noche",
+    "sistemas": ["nervioso", "relajación"],
+    "beneficio": "Valeriana, manzanilla, pasiflora, ginkgo para calma"
+  },
+  "äKwä Limpiador de Aceite a Espuma": {
+    "categoria": "Limpieza Facial",
+    "forma": "gel limpiador",
+    "dosis": "2 veces al día",
+    "sistemas": ["piel"],
+    "beneficio": "Bifásico con té verde fermentado, arroz sake, agua de mar"
+  },
+  "äKwä Tónico Cuatro en Uno": {
+    "categoria": "Tónico Facial",
+    "forma": "spray líquido",
+    "dosis": "después de limpiar",
+    "sistemas": ["piel"],
+    "beneficio": "Té verde fermentado + agua de rosas, prepara y fija maquillaje"
+  },
+  "äKwä Esencia de Vitaminas": {
+    "categoria": "Esencia Facial",
+    "forma": "suero líquido",
+    "dosis": "después de tónico",
+    "sistemas": ["piel"],
+    "beneficio": "Vitaminas, fermentos, arce rojo para microbiota de piel"
+  },
+  "äKwä Crema Humectante": {
+    "categoria": "Hidratación Facial",
+    "forma": "crema",
+    "dosis": "2 veces al día",
+    "sistemas": ["piel"],
+    "beneficio": "Té verde, savia de abedul, ginseng, reduce arrugas"
+  },
+  "äKwä Crema de Ojos": {
+    "categoria": "Contorno Ojos",
+    "forma": "crema",
+    "dosis": "mañana y noche",
+    "sistemas": ["piel"],
+    "beneficio": "Té verde, pepino, bambú, hongo tremella para ojeras e hinchazón"
+  },
+  "äKwä Mascarilla de Barro Volcánico": {
+    "categoria": "Mascarilla Purificante",
+    "forma": "barro",
+    "dosis": "1-2 veces por semana",
+    "sistemas": ["piel"],
+    "beneficio": "Ceniza volcánica, kaolin, té verde, semilla de soya negra"
+  },
+  "äKwä Mascarilla de Velo": {
+    "categoria": "Mascarilla Sheet",
+    "forma": "mascarilla de tela",
+    "dosis": "1-2 veces por semana",
+    "sistemas": ["piel"],
+    "beneficio": "Única con Transfer Factor + ácido hialurónico multicapa"
+  },
+  "äKwä Protector Solar Humectante con FPS 30": {
+    "categoria": "Protección Solar",
+    "forma": "crema",
+    "dosis": "aplicar antes de exposición",
+    "sistemas": ["piel"],
+    "beneficio": "FPS 30 con óxido de zinc, vitamina E, protección urbana"
+  },
+  "äKwä Sistema de Cuidado de la Piel": {
+    "categoria": "Sistema Completo Facial",
+    "forma": "kit completo",
+    "dosis": "30 días",
+    "sistemas": ["piel"],
+    "beneficio": "8 productos completos + bolso + guía de uso"
+  },
+  "enummi Pasta Dental": {
+    "categoria": "Higiene Oral",
+    "forma": "pasta",
+    "dosis": "2-3 veces al día",
+    "sistemas": ["oral"],
+    "beneficio": "Sin flúor, menta, disuelve placa"
+  },
+  "enummi Loción Corporal": {
+    "categoria": "Hidratación Corporal",
+    "forma": "loción",
+    "dosis": "después del baño",
+    "sistemas": ["piel"],
+    "beneficio": "Té blanco, aloe, karité para piel suave"
+  },
+  "enummi Champú": {
+    "categoria": "Cabello",
+    "forma": "champú líquido",
+    "dosis": "uso diario",
+    "sistemas": ["cabello"],
+    "beneficio": "Sin sulfatos, derivados de coco, previene pérdida de color"
+  },
+  "enummi Acondicionador": {
+    "categoria": "Cabello",
+    "forma": "acondicionador",
+    "dosis": "uso diario",
+    "sistemas": ["cabello"],
+    "beneficio": "Rico en proteínas, vitaminas, reduce estática"
+  },
+  "enummi Gel de Baño": {
+    "categoria": "Higiene Corporal",
+    "forma": "gel",
+    "dosis": "uso diario",
+    "sistemas": ["piel"],
+    "beneficio": "Espuma lujosa con mango, aguacate, miel"
+  }
+}
