@@ -14,7 +14,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const productos4Life = JSON.parse(fs.readFileSync(path.join(__dirname, '../4life-products.json'), 'utf-8'));
 
-// === RESUMIR ARCHIVO (RÁPIDO) ===
+// === RESUMIR ARCHIVO (gpt-4o-mini) ===
 async function resumirArchivo(tipo, datos, archivo) {
   const prompt = `
 Resumen médico: solo parámetros anormales.  
@@ -39,7 +39,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (RÁPIDO + COMPLETO) ===
+// === ANALIZAR ZIP (RÁPIDO + 12 SISTEMAS) ===
 router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -55,7 +55,7 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
     const resumenes = [];
     let patientInfo = { nombre: 'No especificado', edad: 'N/A', sexo: 'N/A', peso: '0', estatura: '0', imc: 'N/A' };
 
-    // === RESUMIR EN PARALELO (MÁX 10 A LA VEZ) ===
+    // === RESUMIR EN PARALELO (LOTES DE 8) ===
     const processFile = async (file) => {
       const filePath = path.join(extractPath, file);
       const ext = path.extname(file).toLowerCase();
@@ -66,7 +66,6 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
           const resumen = await resumirArchivo('json', jsonData, file);
           resumenes.push(resumen);
 
-          // TOMAR PRIMER JSON CON DATOS PERSONALES
           if (jsonData.paciente && patientInfo.nombre === 'No especificado') {
             const peso = parseFloat(jsonData.peso) || 0;
             const estatura = parseFloat(jsonData.estatura) || 0;
@@ -90,7 +89,6 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
       }
     };
 
-    // === PROCESAR EN LOTES DE 8 ===
     for (let i = 0; i < files.length; i += 8) {
       const batch = files.slice(i, i + 8);
       await Promise.all(batch.map(processFile));
@@ -98,7 +96,7 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
 
     if (resumenes.length === 0) throw new Error('No datos');
 
-    // === ANÁLISIS FINAL (FORZAR 10+ SISTEMAS) ===
+    // === ANÁLISIS FINAL (FORZAR 12 SISTEMAS) ===
     const listaProductos = Object.entries(productos4Life)
       .map(([n, i]) => `"${n}": ${i.beneficio}`)
       .join('\n');
@@ -109,8 +107,8 @@ Paciente: ${patientInfo.nombre}, ${patientInfo.edad} años, IMC: ${patientInfo.i
 RESÚMENES (${resumenes.length} archivos):
 ${resumenes.join('\n\n---\n\n')}
 
-**ANÁLISIS OBLIGATORIO (10+ sistemas):**
-hepático, cardiovascular, renal, endocrino, digestivo, inmunológico, óseo, nervioso, respiratorio, muscular, hematológico, otros.
+**ANÁLISIS OBLIGATORIO (12 sistemas):**
+hepatico, cardiovascular, renal, endocrino, digestivo, inmunologico, oseo, nervioso, respiratorio, muscular, hematologico, otros.
 
 Por sistema:
 - 3-5 oraciones detalladas
@@ -153,7 +151,7 @@ ${listaProductos}
 
     let aiResponse = JSON.parse(completion.choices[0].message.content);
 
-    // === ASEGURAR TODOS LOS SISTEMAS ===
+    // === ASEGURAR 12 SISTEMAS ===
     const sistemasRequeridos = [
       'hepatico', 'cardiovascular', 'renal', 'endocrino', 'digestivo',
       'inmunologico', 'oseo', 'nervioso', 'respiratorio', 'muscular',
@@ -190,7 +188,7 @@ ${listaProductos}
   }
 });
 
-// === HISTORIAL Y DETALLE (sin cambios) ===
+// === HISTORIAL Y DETALLE ===
 router.get('/', auth, async (req, res) => {
   const exams = await Exam.find({ userId: req.user.id }).sort({ createdAt: -1 });
   res.json(exams);
