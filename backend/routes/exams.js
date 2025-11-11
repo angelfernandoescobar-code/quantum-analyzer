@@ -39,7 +39,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (RÁPIDO + 12 SISTEMAS) ===
+// === ANALIZAR ZIP (12 SISTEMAS + PACIENTE + ANTI-429) ===
 router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -66,6 +66,7 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
           const resumen = await resumirArchivo('json', jsonData, file);
           resumenes.push(resumen);
 
+          // EXTRAER PACIENTE DE CUALQUIER JSON
           if (jsonData.paciente && patientInfo.nombre === 'No especificado') {
             const peso = parseFloat(jsonData.peso) || 0;
             const estatura = parseFloat(jsonData.estatura) || 0;

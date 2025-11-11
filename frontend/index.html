@@ -270,7 +270,6 @@
   </div>
 
   <script>
-    // URL DINÁMICA
     const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:5000/api'
       : 'https://quantum-analyzer.onrender.com/api';
@@ -354,7 +353,7 @@
       const ai = data.aiAnalysis || {};
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
-      // 12 SISTEMAS COMPLETOS
+      // 12 SISTEMAS CON EMOJIS ORIGINALES
       const sistemas = [
         { key: 'hepatico', title: 'Sistema Hepático', icon: 'Liver' },
         { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Heart' },
@@ -448,19 +447,43 @@
             </div>
           </div>
 
-          <!-- 4LIFE -->
+          <!-- 4LIFE CON DOSIS INTELIGENTE -->
           <div>
             <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
             <div class="fourlife-section p-8 rounded-xl">
-              <p class="text-amber-200 text-sm mb-6 font-medium">Protocolo completo de tratamiento - 3 meses</p>
+              <p class="text-amber-200 text-sm mb-6 font-medium">
+                Protocolo de 1 mes (30 días). <strong>Dosis ajustada según riesgo del paciente</strong>.
+              </p>
               <ul class="space-y-4">
-                ${(ai.recomendaciones_4life || []).map(r => `
-                  <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
-                    <span class="text-amber-400 font-bold text-lg flex-shrink-0">•</span>
-                    <span class="text-slate-100 leading-relaxed">${r}</span>
-                  </li>
-                `).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
+                ${(ai.recomendaciones_4life || []).map(r => {
+                  const isHighRisk = ai.riesgo === 'ALTO';
+                  const isMediumRisk = ai.riesgo === 'MEDIO';
+                  
+                  let dosisDiaria = '2 cápsulas';
+                  if (r.includes('Cardio') || r.includes('Transfer Factor Plus')) {
+                    dosisDiaria = isHighRisk ? '4 cápsulas' : isMediumRisk ? '3 cápsulas' : '2 cápsulas';
+                  } else if (r.includes('Glucoach') || r.includes('RiteStart')) {
+                    dosisDiaria = isHighRisk ? '3 cápsulas' : '2 cápsulas';
+                  }
+
+                  const dosisMensual = dosisDiaria.includes('4') ? '120 cápsulas/mes' : 
+                                      dosisDiaria.includes('3') ? '90 cápsulas/mes' : '60 cápsulas/mes';
+
+                  return `
+                    <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
+                      <span class="text-amber-400 font-bold text-lg flex-shrink-0">Bullet</span>
+                      <span class="text-slate-100 leading-relaxed">
+                        <strong>${r.split(':')[0].trim()}</strong> 
+                        (${dosisDiaria} diarias → ${dosisMensual})<br>
+                        <span class="text-sm text-amber-300">${r.split(':')[1] || ''}</span>
+                      </span>
+                    </li>
+                  `;
+                }).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
               </ul>
+              <p class="text-xs text-amber-300 mt-6 italic">
+                *Dosis basada en riesgo general. Consultar catálogo 4Life para presentaciones.
+              </p>
             </div>
           </div>
 
