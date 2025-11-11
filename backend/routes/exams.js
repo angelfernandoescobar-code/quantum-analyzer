@@ -14,7 +14,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const productos4Life = JSON.parse(fs.readFileSync(path.join(__dirname, '../4life-products.json'), 'utf-8'));
 
-// === RESUMIR ARCHIVO (gpt-4o-mini) ===
+// === RESUMIR ARCHIVO ===
 async function resumirArchivo(tipo, datos, archivo) {
   const prompt = `
 Resumen médico: solo parámetros anormales con valor real y rango normal.  
@@ -39,7 +39,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (12 SISTEMAS + NOMBRE + DATOS CRUDO) ===
+// === ANALIZAR ZIP ===
 router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -54,7 +54,6 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
     const files = fs.readdirSync(extractPath);
     const resumenes = [];
     let patientInfo = { nombre: 'No especificado', edad: 'N/A', sexo: 'N/A', peso: '0', estatura: '0', imc: 'N/A' };
-    const rawData = []; // Guardar datos crudos para análisis
 
     const processFile = async (file) => {
       const filePath = path.join(extractPath, file);
@@ -63,44 +62,50 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
       if (ext === '.json') {
         try {
           const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-          rawData.push(jsonData);
-
           const resumen = await resumirArchivo('json', jsonData, file);
           resumenes.push(resumen);
 
-          // BUSCAR NOMBRE EN CUALQUIER CAMPO
+          // === BUSCAR NOMBRE EN 10+ CAMPOS ===
           if (patientInfo.nombre === 'No especificado') {
-            const possibleNames = [
+            const posiblesNombres = [
               jsonData.paciente,
               jsonData.nombre,
               jsonData.name,
               jsonData.patient,
               jsonData.PatientName,
-              jsonData['Nombre del Paciente']
+              jsonData['Nombre del Paciente'],
+              jsonData['nombre_paciente'],
+              jsonData.Nombre,
+              jsonData.fullName,
+              jsonData['full_name'],
+              jsonData.Patient,
+              jsonData['Patient Name']
             ].filter(Boolean);
 
-            if (possibleNames.length > 0) {
-              patientInfo.nombre = possibleNames[0];
+            if (posiblesNombres.length > 0) {
+              patientInfo.nombre = posiblesNombres[0];
             }
           }
 
-          // EXTRAER EDAD, SEXO, PESO, ESTATURA
+          // === EDAD, SEXO, PESO, ESTATURA ===
           if (!patientInfo.edad || patientInfo.edad === 'N/A') {
-            patientInfo.edad = jsonData.edad || jsonData.age || 'N/A';
+            const edad = jsonData.edad || jsonData.age || jsonData.Edad || jsonData.Age;
+            if (edad) patientInfo.edad = edad;
           }
           if (!patientInfo.sexo || patientInfo.sexo === 'N/A') {
-            patientInfo.sexo = jsonData.sexo || jsonData.gender || jsonData.sexo_biologico || 'N/A';
+            const sexo = jsonData.sexo || jsonData.gender || jsonData.Sexo || jsonData.Gender || jsonData.sexo_biologico;
+            if (sexo) patientInfo.sexo = sexo;
           }
           if (!patientInfo.peso || patientInfo.peso === '0') {
-            const peso = parseFloat(jsonData.peso || jsonData.weight || 0);
+            const peso = parseFloat(jsonData.peso || jsonData.weight || jsonData.Peso || jsonData.Weight || 0);
             if (peso > 0) patientInfo.peso = peso.toString();
           }
           if (!patientInfo.estatura || patientInfo.estatura === '0') {
-            const estatura = parseFloat(jsonData.estatura || jsonData.height || 0);
+            const estatura = parseFloat(jsonData.estatura || jsonData.height || jsonData.Estatura || jsonData.Height || 0);
             if (estatura > 0) patientInfo.estatura = estatura.toString();
           }
 
-          // CALCULAR IMC
+          // === IMC ===
           const peso = parseFloat(patientInfo.peso) || 0;
           const estatura = parseFloat(patientInfo.estatura) || 0;
           if (peso > 0 && estatura > 0) {
@@ -141,7 +146,7 @@ Por sistema:
 - 3-5 oraciones detalladas
 - Incluir parámetros alterados con valor real y rango normal
 - Riesgo: BAJO/MEDIO/ALTO
-- Recomendaciones 4Life: 3-5 productos con beneficio claro
+- Recomendaciones 4Life: TODOS los necesarios (sin límite), con beneficio claro
 
 Productos:
 ${listaProductos}
@@ -156,7 +161,7 @@ ${listaProductos}
     ...
   },
   "riesgo": "ALTO",
-  "recomendaciones_ archery4life": ["Producto: beneficio claro"]
+  "recomendaciones_4life": ["Producto: beneficio claro"]
 }
 `;
 
