@@ -211,13 +211,13 @@
         onclick="showTab('upload')" 
         id="tab-upload" 
         class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-active">
-        📁 Subir Examen
+        Subir Examen
       </button>
       <button 
         onclick="showTab('history')" 
         id="tab-history" 
         class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-inactive">
-        📋 Historial
+        Historial
       </button>
     </div>
 
@@ -255,7 +255,6 @@
           onclick="analyze()" 
           id="analyze-btn" 
           class="btn-primary w-full px-10 py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
-          <span>🚀</span>
           <span>Analizar con IA</span>
         </button>
       </div>
@@ -270,7 +269,11 @@
   </div>
 
   <script>
-    const API = 'http://localhost:5000/api';
+    // URL DINÁMICA: funciona en localhost y en Render
+    const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5000/api'
+      : 'https://quantum-analyzer.onrender.com/api';
+
     const HARDCODED_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxMjZmODM4MzhjZDZiODg3ZTU5Y2U0In0sImlhdCI6MTc2MjgxNTg3NSwiZXhwIjoxNzYyOTAyMjc1fQ.lMIJCLKO8gZEhbBb9wQnE3p7AEAr2XuL3xe5e1Dobbk';
 
     function showTab(tab) {
@@ -291,7 +294,7 @@
     async function analyze() {
       const file = document.getElementById('zipFile').files[0];
       if (!file) {
-        alert('⚠️ Por favor selecciona un archivo ZIP');
+        alert('Por favor selecciona un archivo ZIP');
         return;
       }
 
@@ -303,12 +306,12 @@
 
       let progress = 0;
       const messages = [
-        '🔍 Extrayendo archivos del ZIP...',
-        '📊 Leyendo datos del paciente...',
-        '🧬 Analizando parámetros bioquímicos...',
-        '⚕️ Evaluando sistemas orgánicos...',
-        '🤖 Generando recomendaciones con IA...',
-        '✨ Finalizando análisis detallado...'
+        'Extrayendo archivos del ZIP...',
+        'Leyendo datos del paciente...',
+        'Analizando parámetros bioquímicos...',
+        'Evaluando sistemas orgánicos...',
+        'Generando recomendaciones con IA...',
+        'Finalizando análisis detallado...'
       ];
       
       const interval = setInterval(() => {
@@ -327,7 +330,7 @@
         
         clearInterval(interval);
         document.getElementById('progress-fill').style.width = '100%';
-        document.getElementById('progress-text').textContent = '✅ Análisis completado con éxito';
+        document.getElementById('progress-text').textContent = 'Análisis completado con éxito';
         
         setTimeout(() => {
           document.getElementById('progress-container').classList.add('hidden');
@@ -341,7 +344,7 @@
         clearInterval(interval);
         document.getElementById('progress-container').classList.add('hidden');
         document.getElementById('analyze-btn').disabled = false;
-        alert('❌ Error: ' + (err.response?.data?.error || err.message));
+        alert('Error: ' + (err.response?.data?.error || err.message));
       }
     }
 
@@ -351,13 +354,13 @@
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
       const sistemas = [
-        { key: 'hepatico', title: 'Sistema Hepático', icon: '🔬' },
-        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: '❤️' },
-        { key: 'oseo', title: 'Sistema Óseo', icon: '🦴' },
-        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: '🛡️' },
-        { key: 'endocrino', title: 'Sistema Endocrino', icon: '⚖️' },
-        { key: 'digestivo', title: 'Sistema Digestivo', icon: '🍽️' },
-        { key: 'otros', title: 'Otros Sistemas', icon: '🔍' }
+        { key: 'hepatico', title: 'Sistema Hepático', icon: 'Microscopio' },
+        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Corazón' },
+        { key: 'oseo', title: 'Sistema Óseo', icon: 'Hueso' },
+        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: 'Escudo' },
+        { key: 'endocrino', title: 'Sistema Endocrino', icon: 'Balanza' },
+        { key: 'digestivo', title: 'Sistema Digestivo', icon: 'Plato' },
+        { key: 'otros', title: 'Otros Sistemas', icon: 'Lupa' }
       ];
 
       const imcStatus = p.imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
@@ -371,7 +374,7 @@
           <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <h3 class="text-4xl font-bold text-white mb-2">${data.fileName}</h3>
-              <p class="text-slate-400">📅 ${new Date().toLocaleDateString('es', { 
+              <p class="text-slate-400">Fecha ${new Date().toLocaleDateString('es', { 
                 year: 'numeric', month: 'long', day: 'numeric', 
                 hour: '2-digit', minute: '2-digit' 
               })}</p>
@@ -383,7 +386,7 @@
 
           <!-- PATIENT INFO -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">👤 Información del Paciente</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
@@ -415,7 +418,7 @@
 
           <!-- SUMMARY -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">📋 Resumen General</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
             <div class="card p-8 rounded-2xl">
               <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen}</p>
             </div>
@@ -423,7 +426,7 @@
 
           <!-- SYSTEMS -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">🏥 Análisis por Sistemas</h4>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
             <div class="space-y-6">
               ${sistemas.map(s => `
                 <div class="system-section p-8 rounded-xl">
@@ -439,7 +442,7 @@
 
           <!-- 4LIFE -->
           <div>
-            <h4 class="text-2xl font-bold text-amber-400 mb-6">💊 Plan de Suplementación 4Life Research</h4>
+            <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
             <div class="fourlife-section p-8 rounded-xl">
               <p class="text-amber-200 text-sm mb-6 font-medium">Protocolo completo de tratamiento - 3 meses</p>
               <ul class="space-y-4">
@@ -465,7 +468,7 @@
         if (res.data.length === 0) {
           list.innerHTML = `
             <div class="col-span-full text-center card p-20 rounded-2xl">
-              <div class="text-6xl mb-6 opacity-20">📭</div>
+              <div class="text-6xl mb-6 opacity-20">Caja</div>
               <h3 class="text-2xl font-bold text-slate-400 mb-2">No hay análisis previos</h3>
               <p class="text-slate-500">Los exámenes que analices aparecerán aquí</p>
             </div>
@@ -483,7 +486,7 @@
                 <div class="flex-1">
                   <h4 class="font-bold text-xl text-cyan-400 mb-2 line-clamp-1">${exam.fileName}</h4>
                   <p class="text-sm text-slate-400">
-                    📅 ${new Date(exam.createdAt).toLocaleDateString('es', { 
+                    Fecha ${new Date(exam.createdAt).toLocaleDateString('es', { 
                       year: 'numeric', month: 'short', day: 'numeric' 
                     })}
                   </p>
@@ -493,7 +496,7 @@
                 </div>
               </div>
               <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-all mt-4">
-                Ver Análisis Completo →
+                Ver Análisis Completo
               </button>
             </div>
           `;
@@ -501,7 +504,7 @@
       } catch (err) {
         document.getElementById('history-list').innerHTML = `
           <div class="col-span-full text-center card p-20 rounded-2xl">
-            <div class="text-6xl mb-6">⚠️</div>
+            <div class="text-6xl mb-6">Advertencia</div>
             <h3 class="text-2xl font-bold text-slate-400">Error al cargar historial</h3>
           </div>
         `;
@@ -517,7 +520,7 @@
           document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       } catch (err) { 
-        alert('❌ Error al cargar el análisis'); 
+        alert('Error al cargar el análisis'); 
       }
     }
 
