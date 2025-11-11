@@ -334,7 +334,7 @@
         
         setTimeout(() => {
           document.getElementById('progress-container').classList.add('hidden');
-          document.getElementById('analyze-btn').disabled = false;
+          document.getElementById('analyze-analyze-btn').disabled = false;
           displayDetailedReport(res.data);
           setTimeout(() => {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -353,7 +353,7 @@
       const ai = data.aiAnalysis || {};
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
-      // 12 SISTEMAS CON EMOJIS REALES
+      // EMOJIS REALES (NO TEXTO)
       const sistemas = [
         { key: 'hepatico', title: 'Sistema Hepático', icon: 'Liver' },
         { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Heart' },
