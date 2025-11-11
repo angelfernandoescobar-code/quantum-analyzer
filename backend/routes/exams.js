@@ -12,10 +12,34 @@ const auth = require('../middleware/auth');
 const upload = multer({ dest: 'uploads/' });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// CARGAR PRODUCTOS 4LIFE
 const productos4Life = JSON.parse(fs.readFileSync(path.join(__dirname, '../4life-products.json'), 'utf-8'));
 
-// === ANALIZAR ZIP (1 PACIENTE, 40+ ARCHIVOS) ===
+// === FUNCIÓN: RESUMIR ARCHIVO (MAX 5000 tokens) ===
+async function resumirArchivo(tipo, datos, archivo) {
+  const prompt = `
+Eres un médico. Resume **solo parámetros anormales** de este archivo.  
+Formato:  
+- Parámetro: valor (rango normal) → impacto breve  
+Máximo 10 líneas.
+
+Archivo: ${archivo}
+Datos: ${tipo === 'json' ? JSON.stringify(datos, null, 2).substring(0, 4000) : datos.substring(0, 4000)}
+`;
+
+  try {
+    const res = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500,
+      temperature: 0.1
+    });
+    return res.choices[0].message.content.trim();
+  } catch (err) {
+    return `Error resumiendo ${archivo}: ${err.message}`;
+  }
+}
+
+// === ANALIZAR ZIP (CHUNKING + RESUMEN) ===
 router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -28,10 +52,10 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
     await fs.createReadStream(zipPath).pipe(unzipper.Extract({ path: extractPath })).promise();
 
     const files = fs.readdirSync(extractPath);
-    const allData = { examenes: [] };
+    const resumenes = [];
     let patientInfo = {};
 
-    // === RECOLECTAR TODOS LOS ARCHIVOS ===
+    // === 1. RESUMIR CADA ARCHIVO (gpt-4o-mini, barato y rápido) ===
     for (const file of files) {
       const filePath = path.join(extractPath, file);
       const ext = path.extname(file).toLowerCase();
@@ -39,14 +63,13 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
       if (ext === '.json') {
         try {
           const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-          allData.examenes.push({ tipo: 'json', datos: jsonData, archivo: file });
+          const resumen = await resumirArchivo('json', jsonData, file);
+          resumenes.push(resumen);
 
-          // Extraer info del paciente (primer JSON con datos personales)
           if (jsonData.paciente && !patientInfo.nombre) {
             const peso = parseFloat(jsonData.peso) || 0;
             const estatura = parseFloat(jsonData.estatura) || 0;
             const imc = peso && estatura ? (peso / Math.pow(estatura / 100, 2)).toFixed(1) : 'N/A';
-
             patientInfo = {
               nombre: jsonData.paciente || 'No especificado',
               edad: jsonData.edad || 'N/A',
@@ -60,70 +83,54 @@ router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
       }
 
       if (ext === '.html' || ext === '.htm') {
-        const htmlContent = fs.readFileSync(filePath, 'utf-8');
-        allData.examenes.push({ tipo: 'html', contenido: htmlContent.substring(0, 15000), archivo: file });
+        const html = fs.readFileSync(filePath, 'utf-8');
+        const resumen = await resumirArchivo('html', html, file);
+        resumenes.push(resumen);
       }
     }
 
-    if (allData.examenes.length === 0) throw new Error('No se encontraron datos en el ZIP');
+    if (resumenes.length === 0) throw new Error('No se encontraron datos');
 
-    // === LISTA DE PRODUCTOS ===
+    // === 2. ANÁLISIS FINAL (gpt-4o, máx 25K tokens) ===
     const listaProductos = Object.entries(productos4Life)
-      .map(([nombre, info]) => `"${nombre}": ${info.beneficio} | Dosis: ${info.dosis} | Sistemas: ${info.sistemas.join(', ')}`)
+      .map(([n, i]) => `"${n}": ${i.beneficio} | Dosis: ${i.dosis}`)
       .join('\n');
 
-    // === PROMPT ÉPICO (1 PACIENTE, 40+ ARCHIVOS) ===
-    const prompt = `
-Eres un médico funcional experto en 4Life Research. Analiza **TODOS** los exámenes del ZIP (40+ archivos) de **UN SOLO PACIENTE**.
+    const promptFinal = `
+Paciente: ${patientInfo.nombre}, ${patientInfo.edad} años, IMC: ${patientInfo.imc}
 
-**REGLAS ESTRICTAS:**
-- Analiza **10+ sistemas**: hepático, cardiovascular, renal, endocrino, digestivo, inmunológico, óseo, nervioso, respiratorio, muscular, hematológico, otros.
-- Para cada sistema:
-  1. Lista **todos** los parámetros anormales (valor vs rango normal)
-  2. Explica fisiología, causas probables e impacto
-  3. 3-5 oraciones detalladas
-- Resumen: 4-5 líneas sobre salud general
+**RESÚMENES DE ${resumenes.length} ARCHIVOS (solo anormales):**
+${resumenes.join('\n\n---\n\n')}
+
+**TAREA:**
+- Analiza 10+ sistemas: hepático, cardiovascular, renal, endocrino, digestivo, inmunológico, óseo, nervioso, respiratorio, muscular, hematológico, otros.
+- Por sistema: 3-5 oraciones detalladas
 - Riesgo: BAJO/MEDIO/ALTO
-- Recomendaciones 4Life: máx 8 productos, dosis ajustada, solo lo necesario
-- Usa **solo estos productos**:
+- Recomendaciones 4Life: máx 8, dosis ajustada
 
+Productos:
 ${listaProductos}
 
 **FORMATO JSON EXACTO:**
-
 {
-  "paciente": { "nombre": "${patientInfo.nombre}", "edad": "${patientInfo.edad}", "sexo": "${patientInfo.sexo}", "imc": "${patientInfo.imc}" },
-  "resumen": "4-5 líneas sobre el estado general del paciente...",
-  "analisis_por_sistemas": {
-    "hepatico": "Explicación larga (3-5 oraciones)...",
-    "cardiovascular": "...",
-    "renal": "...",
-    ...
-  },
+  "paciente": ${JSON.stringify(patientInfo)},
+  "resumen": "4-5 líneas...",
+  "analisis_por_sistemas": { "hepatico": "...", ... },
   "riesgo": "ALTO",
-  "recomendaciones_4life": [
-    "Transfer Factor Plus (2 cápsulas 2x/día): Inmunidad baja..."
-  ]
+  "recomendaciones_4life": [ "Producto (dosis): motivo" ]
 }
-
-**DATOS COMPLETOS (${allData.examenes.length} archivos encontrados):**
-${allData.examenes.map((e, i) => `
---- ARCHIVO ${i + 1}: ${e.archivo} ---
-${e.tipo === 'json' ? JSON.stringify(e.datos, null, 2) : e.contenido}
-`).join('\n\n')}
 `;
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: 'user', content: promptFinal.substring(0, 25000) }], // SAFE
       response_format: { type: 'json_object' },
       temperature: 0.2,
-      max_tokens: 4096
+      max_tokens: 3000
     });
 
     const aiResponse = JSON.parse(completion.choices[0].message.content);
 
-    // === GUARDAR EN MONGODB ===
     const exam = new Exam({
       userId: req.user.id,
       fileName,
@@ -134,7 +141,6 @@ ${e.tipo === 'json' ? JSON.stringify(e.datos, null, 2) : e.contenido}
 
     await exam.save();
 
-    // === LIMPIAR ===
     fs.unlinkSync(zipPath);
     fs.rmSync(extractPath, { recursive: true, force: true });
 
@@ -148,7 +154,7 @@ ${e.tipo === 'json' ? JSON.stringify(e.datos, null, 2) : e.contenido}
   }
 });
 
-// === HISTORIAL, DETALLE, PDF (sin cambios) ===
+// === HISTORIAL, DETALLE ===
 router.get('/', auth, async (req, res) => {
   try {
     const exams = await Exam.find({ userId: req.user.id }).sort({ createdAt: -1 });
