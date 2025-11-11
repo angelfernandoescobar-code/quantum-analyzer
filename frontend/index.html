@@ -8,542 +8,229 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    
-    * { 
-      font-family: 'Inter', sans-serif;
-    }
-    
-    body { 
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      min-height: 100vh;
-    }
-    
-    .loader {
-      width: 48px;
-      height: 48px;
-      border: 4px solid rgba(34, 211, 238, 0.1);
-      border-top: 4px solid #22d3ee;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .progress-bar {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #22d3ee, #10b981);
-      transition: width 0.4s ease;
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
-    }
-    
-    .tab-button {
-      transition: all 0.3s ease;
-    }
-    
-    .tab-active {
-      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
-      color: white;
-      box-shadow: 0 4px 20px rgba(34, 211, 238, 0.3);
-    }
-    
-    .tab-inactive {
-      background: rgba(30, 41, 59, 0.5);
-      color: #94a3b8;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-    }
-    
-    .tab-inactive:hover {
-      background: rgba(30, 41, 59, 0.8);
-      color: #cbd5e1;
-      border-color: rgba(148, 163, 184, 0.3);
-    }
-    
-    .card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .card:hover {
-      border-color: rgba(34, 211, 238, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn-primary:hover:not(:disabled) {
-      box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
-      transform: translateY(-2px);
-    }
-    
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .risk-badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.5rem 1.25rem;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .risk-alto {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
-    }
-    
-    .risk-medio {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;
-      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
-    }
-    
-    .risk-bajo {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
-    }
-    
-    .stat-card {
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(14, 165, 233, 0.03));
-      border: 1px solid rgba(34, 211, 238, 0.15);
-      transition: all 0.3s ease;
-    }
-    
-    .stat-card:hover {
-      border-color: rgba(34, 211, 238, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(34, 211, 238, 0.1);
-    }
-    
-    .system-section {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.6));
-      border-left: 4px solid #22d3ee;
-      transition: all 0.3s ease;
-    }
-    
-    .system-section:hover {
-      border-left-width: 6px;
-      box-shadow: -4px 0 20px rgba(34, 211, 238, 0.15);
-    }
-    
-    .fourlife-section {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
-      border: 1px solid rgba(245, 158, 11, 0.2);
-    }
-    
-    input[type="file"] {
-      cursor: pointer;
-    }
-    
-    input[type="file"]::file-selector-button {
-      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
-      color: white;
-      border: none;
-      padding: 0.875rem 2rem;
-      border-radius: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-right: 1rem;
-    }
-    
-    input[type="file"]::file-selector-button:hover {
-      box-shadow: 0 4px 20px rgba(34, 211, 238, 0.4);
-      transform: scale(1.02);
-    }
-    
-    .history-card {
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    
-    .history-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(34, 211, 238, 0.15);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.6s ease-out;
-    }
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
+
+    .loader { width: 48px; height: 48px; border: 4px solid rgba(34,211,238,0.1); border-top: 4px solid #22d3ee; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .progress-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #22d3ee, #10b981); transition: width 0.4s ease; box-shadow: 0 0 20px rgba(34,211,238,0.6); }
+
+    .tab-button { transition: all 0.3s ease; }
+    .tab-active { background: linear-gradient(135deg, #22d3ee, #0ea5e9); color: white; box-shadow: 0 4px 20px rgba(34,211,238,0.3); }
+    .tab-inactive { background: rgba(30,41,59,0.5); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+    .tab-inactive:hover { background: rgba(30,41,59,0.8); color: #cbd5e1; border-color: rgba(148,163,184,0.3); }
+
+    .card { background: rgba(30,41,59,0.6); backdrop-filter: blur(20px); border: 1px solid rgba(148,163,184,0.1); transition: all 0.3s ease; }
+    .card:hover { border-color: rgba(34,211,238,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+
+    .btn-primary { background: linear-gradient(135deg,#10b981,#059669); color:white; transition:all 0.3s ease; box-shadow:0 4px 20px rgba(16,185,129,0.3);}
+    .btn-primary:hover:not(:disabled){box-shadow:0 6px 30px rgba(16,185,129,0.5);transform:translateY(-2px);}
+    .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+
+    .risk-badge{font-size:0.75rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:999px;text-transform:uppercase;letter-spacing:0.05em;}
+    .risk-alto{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;box-shadow:0 4px 20px rgba(239,68,68,0.4);}
+    .risk-medio{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;box-shadow:0 4px 20px rgba(245,158,11,0.4);}
+    .risk-bajo{background:linear-gradient(135deg,#10b981,#059669);color:white;box-shadow:0 4px 20px rgba(16,185,129,0.4);}
+
+    .system-section{background:linear-gradient(135deg,rgba(30,41,59,0.8),rgba(51,65,85,0.6));border-left:4px solid #22d3ee;transition:all 0.3s ease;}
+    .system-section:hover{border-left-width:6px;box-shadow:-4px 0 20px rgba(34,211,238,0.15);}
+    .fourlife-section{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(217,119,6,0.05));border:1px solid rgba(245,158,11,0.2);}
+    input[type="file"]{cursor:pointer;}
+    input[type="file"]::file-selector-button{background:linear-gradient(135deg,#22d3ee,#0ea5e9);color:white;border:none;padding:0.875rem 2rem;border-radius:0.75rem;font-weight:600;cursor:pointer;transition:all 0.3s ease;margin-right:1rem;}
+    input[type="file"]::file-selector-button:hover{box-shadow:0 4px 20px rgba(34,211,238,0.4);transform:scale(1.02);}
   </style>
 </head>
 <body class="min-h-screen text-white">
   <div class="max-w-7xl mx-auto px-6 py-12">
-    
-    <!-- HEADER -->
     <div class="text-center mb-16">
-      <h1 class="text-6xl md:text-7xl font-bold mb-3" style="color: #22d3ee;">
-        Quantum Analyzer
-      </h1>
+      <h1 class="text-6xl md:text-7xl font-bold mb-3" style="color:#22d3ee;">Quantum Analyzer</h1>
       <div class="h-1 w-32 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mb-4"></div>
       <p class="text-slate-400 text-lg">Sistema de Análisis Clínico Inteligente</p>
     </div>
 
-    <!-- TABS -->
     <div class="flex gap-4 mb-12 max-w-2xl mx-auto">
-      <button 
-        onclick="showTab('upload')" 
-        id="tab-upload" 
-        class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-active">
-        Subir Examen
-      </button>
-      <button 
-        onclick="showTab('history')" 
-        id="tab-history" 
-        class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-inactive">
-        Historial
-      </button>
+      <button onclick="showTab('upload')" id="tab-upload" class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-active">Subir Examen</button>
+      <button onclick="showTab('history')" id="tab-history" class="flex-1 px-8 py-4 rounded-xl font-semibold tab-button tab-inactive">Historial</button>
     </div>
 
-    <!-- UPLOAD TAB -->
     <div id="upload-tab">
       <div class="card p-10 rounded-2xl max-w-4xl mx-auto mb-12">
         <h2 class="text-3xl font-bold mb-8 text-cyan-400">Subir Examen (.zip)</h2>
-        
-        <div class="mb-8">
-          <input 
-            type="file" 
-            id="zipFile" 
-            accept=".zip" 
-            class="block w-full text-slate-300 
-                   file:mr-4 file:py-3.5 file:px-8
-                   file:text-sm file:font-semibold
-                   hover:file:opacity-90
-                   border border-slate-600 rounded-xl
-                   bg-slate-800/50 p-4"/>
-        </div>
-        
+        <input type="file" id="zipFile" accept=".zip" class="block w-full text-slate-300 file:mr-4 file:py-3.5 file:px-8 border border-slate-600 rounded-xl bg-slate-800/50 p-4"/>
         <div id="progress-container" class="hidden mb-8 p-6 card rounded-xl">
           <div class="flex items-center gap-4 mb-4">
             <div class="loader"></div>
             <div class="flex-1">
               <p class="text-sm font-medium text-cyan-400 mb-3" id="progress-text">Procesando...</p>
-              <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill w-0"></div>
-              </div>
+              <div class="progress-bar"><div id="progress-fill" class="progress-fill w-0"></div></div>
             </div>
           </div>
         </div>
-
-        <button 
-          onclick="analyze()" 
-          id="analyze-btn" 
-          class="btn-primary w-full px-10 py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
-          <span>Rocket</span>
-          <span>Analizar con IA</span>
+        <button onclick="analyze()" id="analyze-btn" class="btn-primary w-full px-10 py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
+          🚀 <span>Analizar con IA</span>
         </button>
       </div>
-
       <div id="results" class="space-y-10"></div>
     </div>
 
-    <!-- HISTORY TAB -->
     <div id="history-tab" class="hidden">
       <div id="history-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
     </div>
   </div>
 
-  <script>
-    const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5000/api'
-      : 'https://quantum-analyzer.onrender.com/api';
+<script>
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5000/api'
+  : 'https://quantum-analyzer.onrender.com/api';
+const HARDCODED_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxMjZmODM4MzhjZDZiODg3ZTU5Y2U0In0sImlhdCI6MTc2MjgxNTg3NSwiZXhwIjoxNzYyOTAyMjc1fQ.lMIJCLKO8gZEhbBb9wQnE3p7AEAr2XuL3xe5e1Dobbk';
 
-    const HARDCODED_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxMjZmODM4MzhjZDZiODg3ZTU5Y2U0In0sImlhdCI6MTc2MjgxNTg3NSwiZXhwIjoxNzYyOTAyMjc1fQ.lMIJCLKO8gZEhbBb9wQnE3p7AEAr2XuL3xe5e1Dobbk';
+function showTab(tab){
+  document.getElementById('upload-tab').classList.add('hidden');
+  document.getElementById('history-tab').classList.add('hidden');
+  document.getElementById('tab-upload').classList.remove('tab-active');
+  document.getElementById('tab-history').classList.remove('tab-active');
+  document.getElementById('tab-upload').classList.add('tab-inactive');
+  document.getElementById('tab-history').classList.add('tab-inactive');
+  document.getElementById(tab+'-tab').classList.remove('hidden');
+  document.getElementById('tab-'+tab).classList.add('tab-active');
+  document.getElementById('tab-'+tab).classList.remove('tab-inactive');
+  if(tab==='history') loadHistory();
+}
 
-    function showTab(tab) {
-      document.getElementById('upload-tab').classList.add('hidden');
-      document.getElementById('history-tab').classList.add('hidden');
-      document.getElementById('tab-upload').classList.remove('tab-active');
-      document.getElementById('tab-history').classList.remove('tab-active');
-      document.getElementById('tab-upload').classList.add('tab-inactive');
-      document.getElementById('tab-history').classList.add('tab-inactive');
+async function analyze(){
+  const file=document.getElementById('zipFile').files[0];
+  if(!file){alert('Por favor selecciona un archivo ZIP');return;}
+  const formData=new FormData();
+  formData.append('zip',file);
+  document.getElementById('progress-container').classList.remove('hidden');
+  document.getElementById('analyze-btn').disabled=true;
+  let progress=0;
+  const messages=['Extrayendo archivos del ZIP...','Leyendo datos del paciente...','Analizando parámetros bioquímicos...','Evaluando sistemas orgánicos...','Generando recomendaciones con IA...','Finalizando análisis detallado...'];
+  const interval=setInterval(()=>{
+    progress=Math.min(progress+15,90);
+    document.getElementById('progress-fill').style.width=progress+'%';
+    const index=Math.floor(progress/15)-1;
+    if(messages[index])document.getElementById('progress-text').textContent=messages[index];
+  },700);
 
-      document.getElementById(tab + '-tab').classList.remove('hidden');
-      document.getElementById('tab-' + tab).classList.add('tab-active');
-      document.getElementById('tab-' + tab).classList.remove('tab-inactive');
-      
-      if (tab === 'history') loadHistory();
-    }
+  try{
+    const res=await axios.post(API+'/exams/analyze',formData,{headers:{'x-auth-token':HARDCODED_TOKEN}});
+    clearInterval(interval);
+    document.getElementById('progress-fill').style.width='100%';
+    document.getElementById('progress-text').textContent='Análisis completado con éxito';
+    setTimeout(()=>{
+      document.getElementById('progress-container').classList.add('hidden');
+      document.getElementById('analyze-btn').disabled=false;
+      displayDetailedReport(res.data);
+      setTimeout(()=>{document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});},100);
+    },1200);
+  }catch(err){
+    clearInterval(interval);
+    document.getElementById('progress-container').classList.add('hidden');
+    document.getElementById('analyze-btn').disabled=false;
+    alert('Error: '+(err.response?.data?.error||err.message));
+  }
+}
 
-    async function analyze() {
-      const file = document.getElementById('zipFile').files[0];
-      if (!file) {
-        alert('Por favor selecciona un archivo ZIP');
-        return;
-      }
+// ✅ VERSION B: extrae nombre, edad, sexo, peso, etc. del HTML si no viene en backend
+function extractPatientInfo(html){
+  const clean=html.replace(/\n/g,'');
+  const nombre=clean.match(/Nombre\s*:\s*([^<]+)/i)?.[1]?.trim()||'No especificado';
+  const sexo=clean.match(/Sexo\s*:\s*([^<]+)/i)?.[1]?.trim()||'N/A';
+  const edad=clean.match(/Edad\s*:\s*(\d+)/i)?.[1]?.trim()||'N/A';
+  const peso=clean.match(/\((\d+)\s*cm,(\d+)\s*kg\)/i);
+  const estatura=peso?peso[1]:'N/A';
+  const pesoVal=peso?peso[2]:'N/A';
+  const imc=(pesoVal!=='N/A' && estatura!=='N/A')? (pesoVal/Math.pow(estatura/100,2)).toFixed(1):'N/A';
+  return {nombre,sexo,edad,peso:pesoVal,estatura,imc};
+}
 
-      const formData = new FormData();
-      formData.append('zip', file);
+function displayDetailedReport(data){
+  let p=data.patientInfo||{};
+  if(data.rawHtml){ // si backend envía el html crudo
+    const info=extractPatientInfo(data.rawHtml);
+    p={...p,...info};
+  }
 
-      document.getElementById('progress-container').classList.remove('hidden');
-      document.getElementById('analyze-btn').disabled = true;
+  const ai=data.aiAnalysis||{};
+  const riskClass=ai.riesgo==='ALTO'?'risk-alto':ai.riesgo==='MEDIO'?'risk-medio':'risk-bajo';
 
-      let progress = 0;
-      const messages = [
-        'Extrayendo archivos del ZIP...',
-        'Leyendo datos del paciente...',
-        'Analizando parámetros bioquímicos...',
-        'Evaluando sistemas orgánicos...',
-        'Generando recomendaciones con IA...',
-        'Finalizando análisis detallado...'
-      ];
-      
-      const interval = setInterval(() => {
-        progress = Math.min(progress + 15, 90);
-        document.getElementById('progress-fill').style.width = progress + '%';
-        const index = Math.floor(progress / 15) - 1;
-        if (messages[index]) {
-          document.getElementById('progress-text').textContent = messages[index];
-        }
-      }, 700);
+  // ✅ EMOJIS reales
+  const sistemas=[
+    {key:'hepatico',title:'Sistema Hepático',icon:'🫀'},
+    {key:'cardiovascular',title:'Sistema Cardiovascular',icon:'❤️'},
+    {key:'renal',title:'Sistema Renal',icon:'🧫'},
+    {key:'endocrino',title:'Sistema Endocrino',icon:'⚖️'},
+    {key:'digestivo',title:'Sistema Digestivo',icon:'🦠'},
+    {key:'inmunologico',title:'Sistema Inmunológico',icon:'🛡️'},
+    {key:'oseo',title:'Sistema Óseo',icon:'🦴'},
+    {key:'nervioso',title:'Sistema Nervioso',icon:'🧠'},
+    {key:'respiratorio',title:'Sistema Respiratorio',icon:'🫁'},
+    {key:'muscular',title:'Sistema Muscular',icon:'💪'},
+    {key:'hematologico',title:'Sistema Hematológico',icon:'🩸'},
+    {key:'otros',title:'Otros Sistemas',icon:'🔍'}
+  ];
 
-      try {
-        const res = await axios.post(API + '/exams/analyze', formData, {
-          headers: { 'x-auth-token': HARDCODED_TOKEN }
-        });
-        
-        clearInterval(interval);
-        document.getElementById('progress-fill').style.width = '100%';
-        document.getElementById('progress-text').textContent = 'Análisis completado con éxito';
-        
-        setTimeout(() => {
-          document.getElementById('progress-container').classList.add('hidden');
-          document.getElementById('analyze-btn').disabled = false;
-          displayDetailedReport(res.data);
-          setTimeout(() => {
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 100);
-        }, 1200);
-      } catch (err) {
-        clearInterval(interval);
-        document.getElementById('progress-container').classList.add('hidden');
-        document.getElementById('analyze-btn').disabled = false;
-        alert('Error: ' + (err.response?.data?.error || err.message));
-      }
-    }
+  const imc=parseFloat(p.imc)||0;
+  const imcStatus=imc>25?{text:'Sobrepeso',color:'text-yellow-400'}:
+    imc<18.5?{text:'Bajo peso',color:'text-orange-400'}:
+    {text:'Normal',color:'text-green-400'};
 
-    function displayDetailedReport(data) {
-      const p = data.patientInfo || {};
-      const ai = data.aiAnalysis || {};
-      const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
+  document.getElementById('results').innerHTML=`
+  <div class="fade-in space-y-10 max-w-6xl mx-auto">
+    <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div><h3 class="text-4xl font-bold text-white mb-2">${data.fileName||'Informe'}</h3>
+      <p class="text-slate-400">${new Date().toLocaleString('es-HN')}</p></div>
+      <div class="risk-badge ${riskClass}">Riesgo ${ai.riesgo||'N/A'}</div>
+    </div>
 
-      // EMOJIS REALES (Unicode)
-      const sistemas = [
-        { key: 'hepatico', title: 'Sistema Hepático', icon: 'Liver' },
-        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Heart' },
-        { key: 'renal', title: 'Sistema Renal', icon: 'Kidney' },
-        { key: 'endocrino', title: 'Sistema Endocrino', icon: 'Balance' },
-        { key: 'digestivo', title: 'Sistema Digestivo', icon: 'Stomach' },
-        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: 'Shield' },
-        { key: 'oseo', title: 'Sistema Óseo', icon: 'Bone' },
-        { key: 'nervioso', title: 'Sistema Nervioso', icon: 'Brain' },
-        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: 'Lungs' },
-        { key: 'muscular', title: 'Sistema Muscular', icon: 'Muscle' },
-        { key: 'hematologico', title: 'Sistema Hematológico', icon: 'Blood' },
-        { key: 'otros', title: 'Otros Sistemas', icon: 'Search' }
-      ];
+    <div>
+      <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">Nombre</p><p class="font-bold text-white text-lg">${p.nombre||p.name||p.fullName||'No especificado'}</p></div>
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">Edad</p><p class="font-bold text-white text-lg">${p.edad?(p.edad+' años'):'N/A'}</p></div>
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">Sexo</p><p class="font-bold text-white text-lg">${p.sexo||'N/A'}</p></div>
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">Peso</p><p class="font-bold text-white text-lg">${p.peso? p.peso+' kg':'N/A'}</p></div>
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">Estatura</p><p class="font-bold text-white text-lg">${p.estatura? p.estatura+' cm':'N/A'}</p></div>
+        <div class="stat-card p-5 rounded-xl"><p class="text-xs text-slate-400 uppercase mb-2">IMC</p><p class="font-bold ${imcStatus.color} text-lg">${p.imc||'N/A'}</p><p class="text-xs ${imcStatus.color} mt-1">${imcStatus.text}</p></div>
+      </div>
+    </div>
 
-      const imc = p.imc ? parseFloat(p.imc) : 0;
-      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
-                       imc < 18.5 ? { text: 'Bajo peso', color: 'text-orange-400' } : 
-                       { text: 'Normal', color: 'text-green-400' };
+    <div><h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
+    <div class="card p-8 rounded-2xl"><p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen||'No se generó resumen.'}</p></div></div>
 
-      document.getElementById('results').innerHTML = `
-        <div class="fade-in space-y-10 max-w-6xl mx-auto">
-          
-          <!-- HEADER RESULT -->
-          <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <h3 class="text-4xl font-bold text-white mb-2">${data.fileName || 'Informe'}</h3>
-              <p class="text-slate-400">11 de noviembre de 2025, ${new Date().toLocaleTimeString('es-HN', { hour: '2-digit', minute: '2-digit' })}</p>
-            </div>
-            <div class="risk-badge ${riskClass}">
-              Riesgo ${ai.riesgo || 'N/A'}
-            </div>
-          </div>
+    <div><h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
+      <div class="space-y-6">
+        ${sistemas.map(s=>`
+          <div class="system-section p-8 rounded-xl">
+            <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3"><span class="text-2xl">${s.icon}</span><span>${s.title}</span></h5>
+            <p class="text-slate-200 leading-relaxed whitespace-pre-line">${ai.analisis_por_sistemas?.[s.key]||'No se detectaron alteraciones significativas en este sistema.'}</p>
+          </div>`).join('')}
+      </div>
+    </div>
 
-          <!-- PATIENT INFO -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
-                <p class="font-bold text-white text-lg">${p.nombre || 'No especificado'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Edad</p>
-                <p class="font-bold text-white text-lg">${p.edad ? p.edad + ' años' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Sexo</p>
-                <p class="font-bold text-white text-lg">${p.sexo || 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Peso</p>
-                <p class="font-bold text-white text-lg">${p.peso ? p.peso + ' kg' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Estatura</p>
-                <p class="font-bold text-white text-lg">${p.estatura ? p.estatura + ' cm' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">IMC</p>
-                <p class="font-bold ${imcStatus.color} text-lg">${p.imc || 'N/A'}</p>
-                <p class="text-xs ${imcStatus.color} mt-1">${imcStatus.text}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- SUMMARY -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
-            <div class="card p-8 rounded-2xl">
-              <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen || 'No se generó resumen.'}</p>
-            </div>
-          </div>
-
-          <!-- SYSTEMS -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
-            <div class="space-y-6">
-              ${sistemas.map(s => {
-                const texto = ai.analisis_por_sistemas?.[s.key] || 'No se detectaron alteraciones significativas en este sistema.';
-                return `
-                  <div class="system-section p-8 rounded-xl">
-                    <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
-                      <span class="text-2xl">${s.icon}</span>
-                      <span>${s.title}</span>
-                    </h5>
-                    <p class="text-slate-200 leading-relaxed whitespace-pre-line">${texto}</p>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- 4LIFE SIN LÍMITE -->
-          <div>
-            <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
-            <div class="fourlife-section p-8 rounded-xl">
-              <p class="text-amber-200 text-sm mb-6 font-medium">
-                <strong>Tratamiento mínimo: 3 meses</strong> para resultados óptimos.
-              </p>
-              <ul class="space-y-4">
-                ${(ai.recomendaciones_4life || []).map(r => {
-                  const [producto, ...beneficioParts] = r.split(':');
-                  const beneficio = beneficioParts.join(':').trim();
-                  return `
-                    <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
-                      <span class="text-amber-400 font-bold text-lg flex-shrink-0">Bullet</span>
-                      <div>
-                        <strong class="text-white">${producto.trim()}</strong><br>
-                        <span class="text-slate-300 text-sm">${beneficio || 'Apoyo general al sistema.'}</span>
-                      </div>
-                    </li>
-                  `;
-                }).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
-              </ul>
-              <p class="text-xs text-amber-300 mt-6 italic">
-                *Consultar catálogo oficial 4Life para presentaciones y disponibilidad.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      `;
-    }
-
-    async function loadHistory() {
-      try {
-        const res = await axios.get(API + '/exams', { headers: { 'x-auth-token': HARDCODED_TOKEN } });
-        const list = document.getElementById('history-list');
-        
-        if (res.data.length === 0) {
-          list.innerHTML = `
-            <div class="col-span-full text-center card p-20 rounded-2xl">
-              <div class="text-6xl mb-6 opacity-20">Empty Mailbox</div>
-              <h3 class="text-2xl font-bold text-slate-400 mb-2">No hay análisis previos</h3>
-              <p class="text-slate-500">Los exámenes que analices aparecerán aquí</p>
-            </div>
-          `;
-          return;
-        }
-        
-        list.innerHTML = res.data.map(exam => {
-          const riskClass = exam.aiAnalysis?.riesgo === 'ALTO' ? 'risk-alto' : 
-                           exam.aiAnalysis?.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
-          
-          return `
-            <div class="card p-6 rounded-xl history-card" onclick="loadDetailedReport('${exam._id}')">
-              <div class="flex justify-between items-start mb-4">
-                <div class="flex-1">
-                  <h4 class="font-bold text-xl text-cyan-400 mb-2 line-clamp-1">${exam.fileName}</h4>
-                  <p class="text-sm text-slate-400">
-                    ${new Date(exam.createdAt).toLocaleDateString('es', { 
-                      year: 'numeric', month: 'short', day: 'numeric' 
-                    })}
-                  </p>
-                </div>
-                <div class="risk-badge ${riskClass} text-xs ml-4">
-                  ${exam.aiAnalysis?.riesgo || 'N/A'}
-                </div>
-              </div>
-              <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-all mt-4">
-                Ver Análisis Completo
-              </button>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        document.getElementById('history-list').innerHTML = `
-          <div class="col-span-full text-center card p-20 rounded-2xl">
-            <div class="text-6xl mb-6">Warning</div>
-            <h3 class="text-2xl font-bold text-slate-400">Error al cargar historial</h3>
-          </div>
-        `;
-      }
-    }
-
-    async function loadDetailedReport(id) {
-      showTab('upload');
-      try {
-        const res = await axios.get(API + '/exams/' + id, { headers: { 'x-auth-token': HARDCODED_TOKEN } });
-        displayDetailedReport(res.data);
-        setTimeout(() => {
-          document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      } catch (err) { 
-        alert('Error al cargar el análisis'); 
-      }
-    }
-
-    showTab('upload');
-  </script>
+    <!-- ✅ sin límite de productos 4Life -->
+    <div>
+      <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
+      <div class="fourlife-section p-8 rounded-xl">
+        <p class="text-amber-200 text-sm mb-6 font-medium"><strong>Tratamiento mínimo: 3 meses</strong> para resultados óptimos.</p>
+        <ul class="space-y-4">
+          ${(ai.recomendaciones_4life||[]).map(r=>{
+            const [producto,...beneficioParts]=r.split(':');
+            const beneficio=beneficioParts.join(':').trim();
+            return `<li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
+              <span class="text-amber-400 font-bold text-lg flex-shrink-0">•</span>
+              <div><strong class="text-white">${producto.trim()}</strong><br><span class="text-slate-300 text-sm">${beneficio||'Apoyo general al sistema.'}</span></div>
+            </li>`;
+          }).join('')||'<li class="text-slate-400">No se recomendaron suplementos.</li>'}
+        </ul>
+        <p class="text-xs text-amber-300 mt-6 italic">*Consultar catálogo oficial 4Life para presentaciones y disponibilidad.</p>
+      </div>
+    </div>
+  </div>`;
+}
+showTab('upload');
+</script>
 </body>
 </html>
