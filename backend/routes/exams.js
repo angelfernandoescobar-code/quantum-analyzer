@@ -118,7 +118,7 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
 
     if (resumenes.length === 0) throw new Error('No datos');
 
-    // === ANÁLISIS FINAL CON JSON EXPLÍCITO ===
+    // === ANÁLISIS FINAL CON JSON EXPLÍCITO (CORREGIDO) ===
     const listaProductos = Object.entries(productos4Life)
       .map(([n, i]) => `"${n}": ${i.beneficio}`)
       .join('\n');
@@ -179,7 +179,7 @@ ${listaProductos}
       }
     });
 
-    // GUARDAR SIN userId
+    // GUARDAR SIN userId (opcional)
     const exam = new Exam({
       fileName,
       patientInfo: aiResponse.paciente,
