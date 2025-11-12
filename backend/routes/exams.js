@@ -13,6 +13,11 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const productos4Life = JSON.parse(fs.readFileSync(path.join(__dirname, '../4life-products.json'), 'utf-8'));
 
+// === EXTRAER TEXTO DE HTML ===
+function extraerTextoHTML(html) {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 // === RESUMIR ARCHIVO ===
 async function resumirArchivo(tipo, datos, archivo) {
   const prompt = `
@@ -38,7 +43,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (PÚBLICO) ===
+// === ANALIZAR ZIP (CON SOPORTE HTML) ===
 router.post('/analyze', upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -58,6 +63,7 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
       const filePath = path.join(extractPath, file);
       const ext = path.extname(file).toLowerCase();
 
+      // === JSON ===
       if (ext === '.json') {
         try {
           const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -74,35 +80,52 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
             if (posiblesNombres.length > 0) patientInfo.nombre = posiblesNombres[0];
           }
 
-          if (!patientInfo.edad || patientInfo.edad === 'N/A') {
-            const edad = jsonData.edad || jsonData.age || jsonData.Edad || jsonData.Age;
-            if (edad) patientInfo.edad = edad;
-          }
-          if (!patientInfo.sexo || patientInfo.sexo === 'N/A') {
-            const sexo = jsonData.sexo || jsonData.gender || jsonData.Sexo || jsonData.Gender || jsonData.sexo_biologico;
-            if (sexo) patientInfo.sexo = sexo;
-          }
-          if (!patientInfo.peso || patientInfo.peso === '0') {
-            const peso = parseFloat(jsonData.peso || jsonData.weight || jsonData.Peso || jsonData.Weight || 0);
-            if (peso > 0) patientInfo.peso = peso.toString();
-          }
-          if (!patientInfo.estatura || patientInfo.estatura === '0') {
-            const estatura = parseFloat(jsonData.estatura || jsonData.height || jsonData.Estatura || jsonData.Height || 0);
-            if (estatura > 0) patientInfo.estatura = estatura.toString();
-          }
+          const edad = jsonData.edad || jsonData.age || jsonData.Edad || jsonData.Age;
+          if (edad && (!patientInfo.edad || patientInfo.edad === 'N/A')) patientInfo.edad = edad;
 
-          const peso = parseFloat(patientInfo.peso) || 0;
-          const estatura = parseFloat(patientInfo.estatura) || 0;
-          if (peso > 0 && estatura > 0) {
-            patientInfo.imc = (peso / Math.pow(estatura / 100, 2)).toFixed(1);
-          }
+          const sexo = jsonData.sexo || jsonData.gender || jsonData.Sexo || jsonData.Gender || jsonData.sexo_biologico;
+          if (sexo && (!patientInfo.sexo || patientInfo.sexo === 'N/A')) patientInfo.sexo = sexo;
+
+          const peso = parseFloat(jsonData.peso || jsonData.weight || jsonData.Peso || jsonData.Weight || 0);
+          if (peso > 0 && patientInfo.peso === '0') patientInfo.peso = peso.toString();
+
+          const estatura = parseFloat(jsonData.estatura || jsonData.height || jsonData.Estatura || jsonData.Height || 0);
+          if (estatura > 0 && patientInfo.estatura === '0') patientInfo.estatura = estatura.toString();
         } catch (e) {}
       }
 
+      // === HTML / HTM ===
       if (ext === '.html' || ext === '.htm') {
         const html = fs.readFileSync(filePath, 'utf-8');
-        const resumen = await resumirArchivo('html', html, file);
+        const texto = extraerTextoHTML(html);
+        const resumen = await resumirArchivo('html', texto, file);
         resumenes.push(resumen);
+
+        // === EXTRAER DATOS DEL PACIENTE DEL HTML ===
+        if (patientInfo.nombre === 'No especificado') {
+          const nombreMatch = texto.match(/Nombre[:\s]*([^,;\n]+)/i);
+          if (nombreMatch) patientInfo.nombre = nombreMatch[1].trim();
+        }
+
+        if (!patientInfo.edad || patientInfo.edad === 'N/A') {
+          const edadMatch = texto.match(/Edad[:\s]*([0-9]+)/i);
+          if (edadMatch) patientInfo.edad = edadMatch[1];
+        }
+
+        if (!patientInfo.sexo || patientInfo.sexo === 'N/A') {
+          const sexoMatch = texto.match(/Sexo[:\s]*([^\s,;\n]+)/i);
+          if (sexoMatch) patientInfo.sexo = sexoMatch[1].trim();
+        }
+
+        if (patientInfo.peso === '0') {
+          const pesoMatch = texto.match(/\(.*?([0-9]+)kg/i) || texto.match(/([0-9]+)\s*kg/i);
+          if (pesoMatch) patientInfo.peso = pesoMatch[1];
+        }
+
+        if (patientInfo.estatura === '0') {
+          const estaturaMatch = texto.match(/\(.*?([0-9]+)cm/i) || texto.match(/([0-9]+)\s*cm/i);
+          if (estaturaMatch) patientInfo.estatura = estaturaMatch[1];
+        }
       }
     };
 
@@ -111,13 +134,19 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
       await Promise.all(batch.map(processFile));
     }
 
+    // === CALCULAR IMC ===
+    const peso = parseFloat(patientInfo.peso) || 0;
+    const estatura = parseFloat(patientInfo.estatura) || 0;
+    if (peso > 0 && estatura > 0) {
+      patientInfo.imc = (peso / Math.pow(estatura / 100, 2)).toFixed(1);
+    }
+
     if (resumenes.length === 0) throw new Error('No datos');
 
     const listaProductos = Object.entries(productos4Life)
       .map(([n, i]) => `"${n}": ${i.beneficio}`)
       .join('\n');
 
-    // === PROMPT FINAL CON "JSON" EXPLÍCITO ===
     const promptFinal = `
 Paciente: ${patientInfo.nombre}, ${patientInfo.edad} años, IMC: ${patientInfo.imc}
 
