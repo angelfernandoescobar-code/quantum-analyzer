@@ -7,7 +7,6 @@ const fs = require('fs');
 const path = require('path');
 const { OpenAI } = require('openai');
 const Exam = require('../models/Exam');
-// auth ELIMINADO → NO SE NECESITA LOGIN
 
 const upload = multer({ dest: 'uploads/' });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -39,7 +38,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (SIN AUTENTICACIÓN) ===
+// === ANALIZAR ZIP (PÚBLICO - SIN LOGIN) ===
 router.post('/analyze', upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -65,23 +64,14 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
           const resumen = await resumirArchivo('json', jsonData, file);
           resumenes.push(resumen);
 
-          // === BUSCAR NOMBRE EN 10+ CAMPOS ===
+          // === BUSCAR NOMBRE ===
           if (patientInfo.nombre === 'No especificado') {
             const posiblesNombres = [
-              jsonData.paciente,
-              jsonData.nombre,
-              jsonData.name,
-              jsonData.patient,
-              jsonData.PatientName,
-              jsonData['Nombre del Paciente'],
-              jsonData['nombre_paciente'],
-              jsonData.Nombre,
-              jsonData.fullName,
-              jsonData['full_name'],
-              jsonData.Patient,
+              jsonData.paciente, jsonData.nombre, jsonData.name, jsonData.patient,
+              jsonData.PatientName, jsonData['Nombre del Paciente'], jsonData['nombre_paciente'],
+              jsonData.Nombre, jsonData.fullName, jsonData['full_name'], jsonData.Patient,
               jsonData['Patient Name']
             ].filter(Boolean);
-
             if (posiblesNombres.length > 0) {
               patientInfo.nombre = posiblesNombres[0];
             }
@@ -128,7 +118,7 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
 
     if (resumenes.length === 0) throw new Error('No datos');
 
-    // === ANÁLISIS FINAL ===
+    // === ANÁLISIS FINAL CON JSON EXPLÍCITO ===
     const listaProductos = Object.entries(productos4Life)
       .map(([n, i]) => `"${n}": ${i.beneficio}`)
       .join('\n');
@@ -151,7 +141,7 @@ Por sistema:
 Productos:
 ${listaProductos}
 
-**JSON EXACTO:**
+**RESPONDE SOLO EN FORMATO JSON VÁLIDO. Usa este esquema exacto:**
 {
   "paciente": ${JSON.stringify(patientInfo)},
   "resumen": "4-5 líneas...",
@@ -212,7 +202,7 @@ ${listaProductos}
   }
 });
 
-// === HISTORIAL PÚBLICO (SIN LOGIN) ===
+// === HISTORIAL PÚBLICO ===
 router.get('/', async (req, res) => {
   try {
     const exams = await Exam.find().sort({ createdAt: -1 });
