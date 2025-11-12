@@ -38,7 +38,7 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (PÚBLICO - SIN LOGIN) ===
+// === ANALIZAR ZIP (PÚBLICO) ===
 router.post('/analyze', upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
@@ -64,7 +64,6 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
           const resumen = await resumirArchivo('json', jsonData, file);
           resumenes.push(resumen);
 
-          // === BUSCAR NOMBRE ===
           if (patientInfo.nombre === 'No especificado') {
             const posiblesNombres = [
               jsonData.paciente, jsonData.nombre, jsonData.name, jsonData.patient,
@@ -72,12 +71,9 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
               jsonData.Nombre, jsonData.fullName, jsonData['full_name'], jsonData.Patient,
               jsonData['Patient Name']
             ].filter(Boolean);
-            if (posiblesNombres.length > 0) {
-              patientInfo.nombre = posiblesNombres[0];
-            }
+            if (posiblesNombres.length > 0) patientInfo.nombre = posiblesNombres[0];
           }
 
-          // === EDAD, SEXO, PESO, ESTATURA ===
           if (!patientInfo.edad || patientInfo.edad === 'N/A') {
             const edad = jsonData.edad || jsonData.age || jsonData.Edad || jsonData.Age;
             if (edad) patientInfo.edad = edad;
@@ -95,7 +91,6 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
             if (estatura > 0) patientInfo.estatura = estatura.toString();
           }
 
-          // === IMC ===
           const peso = parseFloat(patientInfo.peso) || 0;
           const estatura = parseFloat(patientInfo.estatura) || 0;
           if (peso > 0 && estatura > 0) {
@@ -118,11 +113,11 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
 
     if (resumenes.length === 0) throw new Error('No datos');
 
-    // === ANÁLISIS FINAL CON JSON EXPLÍCITO (CORREGIDO) ===
     const listaProductos = Object.entries(productos4Life)
       .map(([n, i]) => `"${n}": ${i.beneficio}`)
       .join('\n');
 
+    // === PROMPT FINAL CON "JSON" EXPLÍCITO ===
     const promptFinal = `
 Paciente: ${patientInfo.nombre}, ${patientInfo.edad} años, IMC: ${patientInfo.imc}
 
@@ -165,7 +160,6 @@ ${listaProductos}
 
     let aiResponse = JSON.parse(completion.choices[0].message.content);
 
-    // === ASEGURAR 12 SISTEMAS ===
     const sistemasRequeridos = [
       'hepatico', 'cardiovascular', 'renal', 'endocrino', 'digestivo',
       'inmunologico', 'oseo', 'nervioso', 'respiratorio', 'muscular',
@@ -179,7 +173,6 @@ ${listaProductos}
       }
     });
 
-    // GUARDAR SIN userId (opcional)
     const exam = new Exam({
       fileName,
       patientInfo: aiResponse.paciente,
