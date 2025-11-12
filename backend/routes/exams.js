@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { OpenAI } = require('openai');
 const Exam = require('../models/Exam');
-const auth = require('../middleware/auth');
+// auth ELIMINADO → NO SE NECESITA LOGIN
 
 const upload = multer({ dest: 'uploads/' });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -39,8 +39,8 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP ===
-router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
+// === ANALIZAR ZIP (SIN AUTENTICACIÓN) ===
+router.post('/analyze', upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
   const zipPath = req.file.path;
@@ -189,8 +189,8 @@ ${listaProductos}
       }
     });
 
+    // GUARDAR SIN userId
     const exam = new Exam({
-      userId: req.user.id,
       fileName,
       patientInfo: aiResponse.paciente,
       aiAnalysis: aiResponse,
@@ -212,15 +212,24 @@ ${listaProductos}
   }
 });
 
-router.get('/', auth, async (req, res) => {
-  const exams = await Exam.find({ userId: req.user.id }).sort({ createdAt: -1 });
-  res.json(exams);
+// === HISTORIAL PÚBLICO (SIN LOGIN) ===
+router.get('/', async (req, res) => {
+  try {
+    const exams = await Exam.find().sort({ createdAt: -1 });
+    res.json(exams);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al cargar historial' });
+  }
 });
 
-router.get('/:id', auth, async (req, res) => {
-  const exam = await Exam.findById(req.params.id);
-  if (!exam || exam.userId.toString() !== req.user.id) return res.status(404).json({ error: 'No encontrado' });
-  res.json(exam);
+router.get('/:id', async (req, res) => {
+  try {
+    const exam = await Exam.findById(req.params.id);
+    if (!exam) return res.status(404).json({ error: 'No encontrado' });
+    res.json(exam);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al cargar examen' });
+  }
 });
 
 module.exports = router;
