@@ -4,7 +4,7 @@ const ExamSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false  // ← CAMBIADO: AHORA ES OPCIONAL
   },
   fileName: {
     type: String,
@@ -22,7 +22,7 @@ const ExamSchema = new mongoose.Schema({
     default: {}
   },
   aiAnalysis: {
-    type: Object,  // CAMBIADO: ahora acepta objeto
+    type: Object,
     default: {}
   },
   severity: {
