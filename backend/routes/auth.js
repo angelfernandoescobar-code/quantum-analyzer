@@ -1,20 +1,27 @@
+// backend/routes/auth.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-require('dotenv').config();
+const auth = require('../middleware/auth');
 
-// REGISTRO
-router.post('/register', async (req, res) => {
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_temporal_no_usar_en_produccion';
+
+// === REGISTRO (SOLO ADMIN) ===
+router.post('/register', auth, async (req, res) => {
+  if (req.user.rol !== 'admin') {
+    return res.status(403).json({ error: 'Solo el admin puede crear usuarios' });
+  }
+
   try {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, rol = 'user' } = req.body;
 
     if (!nombre || !email || !password) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ error: 'El usuario ya existe' });
     }
@@ -25,19 +32,26 @@ router.post('/register', async (req, res) => {
     const user = new User({
       nombre,
       email: email.toLowerCase(),
-      password: hashedPassword
+      password: hashedPassword,
+      rol
     });
     await user.save();
 
     const token = jwt.sign(
-      { user: { id: user.id } },
-      process.env.JWT_SECRET,
+      { userId: user._id },
+      JWT_SECRET,
       { expiresIn: '24h' }
     );
 
     res.json({
+      message: 'Usuario creado',
       token,
-      user: { id: user.id, nombre: user.nombre, email: user.email }
+      user: { 
+        id: user._id, 
+        nombre: user.nombre, 
+        email: user.email, 
+        rol: user.rol 
+      }
     });
   } catch (err) {
     console.error('Error en registro:', err);
@@ -45,7 +59,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// LOGIN
+// === LOGIN ===
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -65,14 +79,19 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { user: { id: user.id } },
-      process.env.JWT_SECRET,
+      { userId: user._id, rol: user.rol },
+      JWT_SECRET,
       { expiresIn: '24h' }
     );
 
     res.json({
       token,
-      user: { id: user.id, nombre: user.nombre, email: user.email }
+      user: { 
+        id: user._id, 
+        nombre: user.nombre, 
+        email: user.email, 
+        rol: user.rol 
+      }
     });
   } catch (err) {
     console.error('Error en login:', err);
@@ -80,4 +99,31 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// === LISTAR USUARIOS (SOLO ADMIN) ===
+router.get('/users', auth, async (req, res) => {
+  if (req.user.rol !== 'admin') return res.status(403).json({ error: 'Acceso denegado' });
+
+  const users = await User.find().select('-password');
+  res.json(users);
+});
+
+// === ELIMINAR USUARIO (SOLO ADMIN) ===
+router.delete('/users/:id', auth, async (req, res) => {
+  if (req.user.rol !== 'admin') return res.status(403).json({ error: 'Acceso denegado' });
+
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+  if (user.rol === 'admin' && user.email === 'admin@quantum.com') {
+    return res.status(400).json({ error: 'No puedes eliminar al admin principal' });
+  }
+
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Usuario eliminado' });
+});
+
 module.exports = router;
+// === VALIDAR TOKEN (para index.html) ===
+router.get('/validate', auth, (req, res) => {
+  res.json({ valid: true, user: req.user });
+});

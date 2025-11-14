@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { OpenAI } = require('openai');
 const Exam = require('../models/Exam');
+const auth = require('../middleware/auth'); // ← AÑADIDO
 
 const upload = multer({ dest: 'uploads/' });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -43,8 +44,8 @@ Datos: ${tipo === 'json' ? JSON.stringify(datos).substring(0, 3000) : datos.subs
   }
 }
 
-// === ANALIZAR ZIP (CON SOPORTE HTML) ===
-router.post('/analyze', upload.single('zip'), async (req, res) => {
+// === ANALIZAR ZIP (CON USUARIO) ===
+router.post('/analyze', auth, upload.single('zip'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No se subió ZIP' });
 
   const zipPath = req.file.path;
@@ -63,7 +64,6 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
       const filePath = path.join(extractPath, file);
       const ext = path.extname(file).toLowerCase();
 
-      // === JSON ===
       if (ext === '.json') {
         try {
           const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -94,14 +94,12 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
         } catch (e) {}
       }
 
-      // === HTML / HTM ===
       if (ext === '.html' || ext === '.htm') {
         const html = fs.readFileSync(filePath, 'utf-8');
         const texto = extraerTextoHTML(html);
         const resumen = await resumirArchivo('html', texto, file);
         resumenes.push(resumen);
 
-        // === EXTRAER DATOS DEL PACIENTE DEL HTML ===
         if (patientInfo.nombre === 'No especificado') {
           const nombreMatch = texto.match(/Nombre[:\s]*([^,;\n]+)/i);
           if (nombreMatch) patientInfo.nombre = nombreMatch[1].trim();
@@ -134,7 +132,6 @@ router.post('/analyze', upload.single('zip'), async (req, res) => {
       await Promise.all(batch.map(processFile));
     }
 
-    // === CALCULAR IMC ===
     const peso = parseFloat(patientInfo.peso) || 0;
     const estatura = parseFloat(patientInfo.estatura) || 0;
     if (peso > 0 && estatura > 0) {
@@ -203,6 +200,7 @@ ${listaProductos}
     });
 
     const exam = new Exam({
+      userId: req.user._id, // ← AÑADIDO: GUARDA EL USUARIO
       fileName,
       patientInfo: aiResponse.paciente,
       aiAnalysis: aiResponse,
@@ -224,20 +222,20 @@ ${listaProductos}
   }
 });
 
-// === HISTORIAL PÚBLICO ===
-router.get('/', async (req, res) => {
+// === HISTORIAL PRIVADO ===
+router.get('/', auth, async (req, res) => {
   try {
-    const exams = await Exam.find().sort({ createdAt: -1 });
+    const exams = await Exam.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.json(exams);
   } catch (err) {
     res.status(500).json({ error: 'Error al cargar historial' });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
-    const exam = await Exam.findById(req.params.id);
-    if (!exam) return res.status(404).json({ error: 'No encontrado' });
+    const exam = await Exam.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!exam) return res.status(404).json({ error: 'No encontrado o no autorizado' });
     res.json(exam);
   } catch (err) {
     res.status(500).json({ error: 'Error al cargar examen' });

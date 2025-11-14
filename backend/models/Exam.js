@@ -1,10 +1,11 @@
+// backend/models/Exam.js
 const mongoose = require('mongoose');
 
 const ExamSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false  // ← CAMBIADO: AHORA ES OPCIONAL
+    required: false
   },
   fileName: {
     type: String,
