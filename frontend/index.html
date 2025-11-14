@@ -89,7 +89,7 @@
     
     .btn-primary:hover:not(:disabled) {
       box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
-      transform: translateY(-2px);
+      transform: translateY  translateY(-2px);
     }
     
     .btn-primary:disabled {
@@ -204,11 +204,16 @@
       <div class="h-1 w-32 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mb-4"></div>
       <p class="text-slate-400 text-lg">Sistema de Análisis Clínico Inteligente</p>
     </div>
-    <div class="absolute top-6 right-6">
-  <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-    Cerrar Sesión
-  </button>
-</div>
+
+    <!-- BOTÓN CERRAR SESIÓN + NOMBRE DE USUARIO -->
+    <div class="absolute top-6 right-6 flex items-center gap-6">
+      <div class="text-cyan-400 font-medium" id="userName">Cargando...</div>
+      <button 
+        onclick="logout()" 
+        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+        Cerrar Sesión
+      </button>
+    </div>
 
     <!-- TABS -->
     <div class="flex gap-4 mb-12 max-w-2xl mx-auto">
@@ -360,18 +365,18 @@
 
       // EMOJIS REALES (Unicode)
       const sistemas = [
-        { key: 'hepatico', title: 'Sistema Hepático', icon: '🫀' },
-        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: '❤️' },
-        { key: 'renal', title: 'Sistema Renal', icon: '🧫' },
-        { key: 'endocrino', title: 'Sistema Endocrino', icon: '⚖️' },
-        { key: 'digestivo', title: 'Sistema Digestivo', icon: '🦠' },
-        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: '🛡️' },
-        { key: 'oseo', title: 'Sistema Óseo', icon: '🦴' },
-        { key: 'nervioso', title: 'Sistema Nervioso', icon: '🧠' },
-        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: '🫁' },
-        { key: 'muscular', title: 'Sistema Muscular', icon: '💪' },
-        { key: 'hematologico', title: 'Sistema Hematológico', icon: '🩸' },
-        { key: 'otros', title: 'Otros Sistemas', icon: '🔍' }
+        { key: 'hepatico', title: 'Sistema Hepático', icon: 'Heart' },
+        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Red Heart' },
+        { key: 'renal', title: 'Sistema Renal', icon: 'Petri Dish' },
+        { key: 'endocrino', title: 'Sistema Endocrino', icon: 'Balance Scale' },
+        { key: 'digestivo', title: 'Sistema Digestivo', icon: 'Microbe' },
+        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: 'Shield' },
+        { key: 'oseo', title: 'Sistema Óseo', icon: 'Bone' },
+        { key: 'nervioso', title: 'Sistema Nervioso', icon: 'Brain' },
+        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: 'Lungs' },
+        { key: 'muscular', title: 'Sistema Muscular', icon: 'Flexed Biceps' },
+        { key: 'hematologico', title: 'Sistema Hematológico', icon: 'Drop of Blood' },
+        { key: 'otros', title: 'Otros Sistemas', icon: 'Magnifying Glass' }
       ];
 
       const imc = p.imc ? parseFloat(p.imc) : 0;
@@ -549,6 +554,22 @@
     }
 
     showTab('upload');
-  </script src="auth.js"></script>
+  </script>
+
+  <!-- CORREGIDO: SCRIPT DE AUTENTICACIÓN -->
+  <script src="auth.js"></script>
+
+  <!-- MOSTRAR NOMBRE DEL USUARIO -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      const nameEl = document.getElementById('userName');
+      if (nameEl && user && user.nombre) {
+        nameEl.textContent = user.nombre;
+      } else if (nameEl) {
+        nameEl.textContent = 'Usuario';
+      }
+    });
+  </script>
 </body>
 </html>
