@@ -191,6 +191,298 @@
     .fade-in {
       animation: fadeIn 0.6s ease-out;
     }
+
+    /* ===== ESTILOS DEL CHAT FLOTANTE ===== */
+    #chat-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+    }
+    
+    #chat-button {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(34, 211, 238, 0.4);
+      display: flex;
+      align-items: center;
+      justify-center;
+      transition: all 0.3s ease;
+      font-size: 32px;
+    }
+    
+    #chat-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 48px rgba(34, 211, 238, 0.6);
+    }
+    
+    #chat-container {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 400px;
+      max-width: calc(100vw - 48px);
+      height: 600px;
+      max-height: calc(100vh - 140px);
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+    
+    #chat-container.show {
+      display: flex;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    #chat-header {
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    #chat-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #chat-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-center;
+      color: white;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    
+    #chat-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    #chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    #chat-messages::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    #chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(34, 211, 238, 0.3);
+      border-radius: 3px;
+    }
+    
+    .chat-message {
+      display: flex;
+      gap: 12px;
+      animation: messageSlide 0.3s ease;
+    }
+    
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .chat-message.user {
+      flex-direction: row-reverse;
+    }
+    
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    
+    .chat-message.user .chat-avatar {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .chat-message.ai .chat-avatar {
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    }
+    
+    .chat-bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .chat-message.user .chat-bubble {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .chat-message.ai .chat-bubble {
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(34, 211, 238, 0.2);
+    }
+    
+    #chat-input-container {
+      padding: 16px;
+      background: rgba(30, 41, 59, 0.6);
+      border-top: 1px solid rgba(34, 211, 238, 0.2);
+      display: flex;
+      gap: 12px;
+    }
+    
+    #chat-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    
+    #chat-input:focus {
+      border-color: #22d3ee;
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+    }
+    
+    #chat-input::placeholder {
+      color: #64748b;
+    }
+    
+    #chat-send {
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    
+    #chat-send:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(34, 211, 238, 0.4);
+    }
+    
+    #chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .chat-loading {
+      display: flex;
+      gap: 6px;
+      padding: 12px;
+    }
+    
+    .chat-loading-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22d3ee;
+      animation: dotPulse 1.4s infinite;
+    }
+    
+    .chat-loading-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .chat-loading-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes dotPulse {
+      0%, 60%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      30% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .chat-welcome {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+    }
+
+    .chat-welcome-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .chat-welcome h4 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #22d3ee;
+      margin-bottom: 8px;
+    }
+
+    .chat-welcome p {
+      font-size: 14px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body class="min-h-screen text-white">
@@ -278,11 +570,141 @@
     </div>
   </div>
 
+  <!-- ============================================ -->
+  <!-- CHAT FLOTANTE CON IA -->
+  <!-- ============================================ -->
+  <div id="chat-widget">
+    <button id="chat-button" onclick="toggleChat()">💬</button>
+    
+    <div id="chat-container">
+      <div id="chat-header">
+        <h3>🤖 Quantum Assistant</h3>
+        <button id="chat-close" onclick="toggleChat()">✕</button>
+      </div>
+      
+      <div id="chat-messages">
+        <div class="chat-welcome">
+          <div class="chat-welcome-icon">🩺</div>
+          <h4>¡Hola! Soy tu asistente médico</h4>
+          <p>Puedo ayudarte con preguntas sobre salud, exámenes de laboratorio y resultados médicos. ¿En qué puedo asistirte?</p>
+        </div>
+      </div>
+      
+      <div id="chat-input-container">
+        <input 
+          type="text" 
+          id="chat-input" 
+          placeholder="Escribe tu pregunta..."
+          onkeypress="if(event.key==='Enter') sendChatMessage()"
+        />
+        <button id="chat-send" onclick="sendChatMessage()">📤</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:5000/api'
       : 'https://quantum-analyzer.onrender.com/api';
 
+    // ===== FUNCIONES DEL CHAT =====
+    function toggleChat() {
+      const container = document.getElementById('chat-container');
+      container.classList.toggle('show');
+      
+      if (container.classList.contains('show')) {
+        document.getElementById('chat-input').focus();
+      }
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      const messagesContainer = document.getElementById('chat-messages');
+      const sendBtn = document.getElementById('chat-send');
+      
+      // Limpiar mensaje de bienvenida si existe
+      const welcome = messagesContainer.querySelector('.chat-welcome');
+      if (welcome) welcome.remove();
+      
+      // Agregar mensaje del usuario
+      const userMessage = document.createElement('div');
+      userMessage.className = 'chat-message user';
+      userMessage.innerHTML = `
+        <div class="chat-avatar">👤</div>
+        <div class="chat-bubble">${escapeHtml(message)}</div>
+      `;
+      messagesContainer.appendChild(userMessage);
+      
+      // Limpiar input
+      input.value = '';
+      sendBtn.disabled = true;
+      
+      // Scroll al final
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // Agregar indicador de carga
+      const loadingMessage = document.createElement('div');
+      loadingMessage.className = 'chat-message ai';
+      loadingMessage.id = 'chat-loading';
+      loadingMessage.innerHTML = `
+        <div class="chat-avatar">🤖</div>
+        <div class="chat-bubble">
+          <div class="chat-loading">
+            <div class="chat-loading-dot"></div>
+            <div class="chat-loading-dot"></div>
+            <div class="chat-loading-dot"></div>
+          </div>
+        </div>
+      `;
+      messagesContainer.appendChild(loadingMessage);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.post(API + '/chat/message', 
+          { message }, 
+          { headers: { 'x-auth-token': token } }
+        );
+        
+        // Remover indicador de carga
+        loadingMessage.remove();
+        
+        // Agregar respuesta de la IA
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'chat-message ai';
+        aiMessage.innerHTML = `
+          <div class="chat-avatar">🤖</div>
+          <div class="chat-bubble">${escapeHtml(res.data.message)}</div>
+        `;
+        messagesContainer.appendChild(aiMessage);
+        
+      } catch (err) {
+        loadingMessage.remove();
+        
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'chat-message ai';
+        errorMessage.innerHTML = `
+          <div class="chat-avatar">⚠️</div>
+          <div class="chat-bubble">Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.</div>
+        `;
+        messagesContainer.appendChild(errorMessage);
+      }
+      
+      sendBtn.disabled = false;
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML.replace(/\n/g, '<br>');
+    }
+
+    // ===== FUNCIONES EXISTENTES =====
     function showTab(tab) {
       document.getElementById('upload-tab').classList.add('hidden');
       document.getElementById('history-tab').classList.add('hidden');
@@ -362,228 +784,19 @@
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
       const sistemas = [
-        { key: 'hepatico', title: 'Sistema Hepático', icon: 'Heart' },
-        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Red Heart' },
-        { key: 'renal', title: 'Sistema Renal', icon: 'Petri Dish' },
-        { key: 'endocrino', title: 'Sistema Endocrino', icon: 'Balance Scale' },
-        { key: 'digestivo', title: 'Sistema Digestivo', icon: 'Microbe' },
-        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: 'Shield' },
-        { key: 'oseo', title: 'Sistema Óseo', icon: 'Bone' },
-        { key: 'nervioso', title: 'Sistema Nervioso', icon: 'Brain' },
-        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: 'Lungs' },
-        { key: 'muscular', title: 'Sistema Muscular', icon: 'Flexed Biceps' },
-        { key: 'hematologico', title: 'Sistema Hematológico', icon: 'Drop of Blood' },
-        { key: 'otros', title: 'Otros Sistemas', icon: 'Magnifying Glass' }
+        { key: 'hepatico', title: 'Sistema Hepático', icon: '🫀' },
+        { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: '❤️' },
+        { key: 'renal', title: 'Sistema Renal', icon: '🧬' },
+        { key: 'endocrino', title: 'Sistema Endocrino', icon: '⚖️' },
+        { key: 'digestivo', title: 'Sistema Digestivo', icon: '🦠' },
+        { key: 'inmunologico', title: 'Sistema Inmunológico', icon: '🛡️' },
+        { key: 'oseo', title: 'Sistema Óseo', icon: '🦴' },
+        { key: 'nervioso', title: 'Sistema Nervioso', icon: '🧠' },
+        { key: 'respiratorio', title: 'Sistema Respiratorio', icon: '🫁' },
+        { key: 'muscular', title: 'Sistema Muscular', icon: '💪' },
+        { key: 'hematologico', title: 'Sistema Hematológico', icon: '🩸' },
+        { key: 'otros', title: 'Otros Sistemas', icon: '🔬' }
       ];
 
       const imc = p.imc ? parseFloat(p.imc) : 0;
-      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
-                       imc < 18.5 ? { text: 'Bajo peso', color: 'text-orange-400' } : 
-                       { text: 'Normal', color: 'text-green-400' };
-
-      document.getElementById('results').innerHTML = `
-        <div class="fade-in space-y-10 max-w-6xl mx-auto">
-          
-          <!-- HEADER RESULT -->
-          <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <h3 class="text-4xl font-bold text-white mb-2">${data.fileName || 'Informe'}</h3>
-              <p class="text-slate-400">15 de noviembre de 2025, ${new Date().toLocaleTimeString('es-HN', { hour: '2-digit', minute: '2-digit' })}</p>
-            </div>
-            <div class="risk-badge ${riskClass}">
-              Riesgo ${ai.riesgo || 'N/A'}
-            </div>
-          </div>
-
-          <!-- PATIENT INFO -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
-                <p class="font-bold text-white text-lg"> ${p.nombre || p.name || p.fullName || 'No especificado'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Edad</p>
-                <p class="font-bold text-white text-lg">${p.edad ? p.edad + ' años' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Sexo</p>
-                <p class="font-bold text-white text-lg">${p.sexo || 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Peso</p>
-                <p class="font-bold text-white text-lg">${p.peso ? p.peso + ' kg' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Estatura</p>
-                <p class="font-bold text-white text-lg">${p.estatura ? p.estatura + ' cm' : 'N/A'}</p>
-              </div>
-              <div class="stat-card p-5 rounded-xl">
-                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">IMC</p>
-                <p class="font-bold ${imcStatus.color} text-lg">${p.imc || 'N/A'}</p>
-                <p class="text-xs ${imcStatus.color} mt-1">${imcStatus.text}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- SUMMARY -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
-            <div class="card p-8 rounded-2xl">
-              <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen || 'No se generó resumen.'}</p>
-            </div>
-          </div>
-
-          <!-- SYSTEMS -->
-          <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
-            <div class="space-y-6">
-              ${sistemas.map(s => {
-                const texto = ai.analisis_por_sistemas?.[s.key] || 'No se detectaron alteraciones significativas en este sistema.';
-                return `
-                  <div class="system-section p-8 rounded-xl">
-                    <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
-                      <span class="text-2xl">${s.icon}</span>
-                      <span>${s.title}</span>
-                    </h5>
-                    <p class="text-slate-200 leading-relaxed whitespace-pre-line">${texto}</p>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- 4LIFE SIN LÍMITE -->
-          <div>
-            <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
-            <div class="fourlife-section p-8 rounded-xl">
-              <p class="text-amber-200 text-sm mb-6 font-medium">
-                <strong>Tratamiento mínimo: 3 meses</strong> para resultados óptimos.
-              </p>
-              <ul class="space-y-4">
-                ${(ai.recomendaciones_4life || []).map(r => {
-                  const [producto, ...beneficioParts] = r.split(':');
-                  const beneficio = beneficioParts.join(':').trim();
-                  return `
-                    <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
-                      <span class="text-amber-400 font-bold text-lg flex-shrink-0">Bullet</span>
-                      <div>
-                        <strong class="text-white">${producto.trim()}</strong><br>
-                        <span class="text-slate-300 text-sm">${beneficio || 'Apoyo general al sistema.'}</span>
-                      </div>
-                    </li>
-                  `;
-                }).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
-              </ul>
-              <p class="text-xs text-amber-300 mt-6 italic">
-                *Consultar catálogo oficial 4Life para presentaciones y disponibilidad.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      `;
-    }
-
-    async function loadHistory() {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(API + '/exams', { headers: { 'x-auth-token': token } });
-        const list = document.getElementById('history-list');
-        
-        if (res.data.length === 0) {
-          list.innerHTML = `
-            <div class="col-span-full text-center card p-20 rounded-2xl">
-              <div class="text-6xl mb-6 opacity-20">Empty Mailbox</div>
-              <h3 class="text-2xl font-bold text-slate-400 mb-2">No hay análisis previos</h3>
-              <p class="text-slate-500">Los exámenes que analices aparecerán aquí</p>
-            </div>
-          `;
-          return;
-        }
-        
-        list.innerHTML = res.data.map(exam => {
-          const riskClass = exam.aiAnalysis?.riesgo === 'ALTO' ? 'risk-alto' : 
-                           exam.aiAnalysis?.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
-          
-          return `
-            <div class="card p-6 rounded-xl history-card" onclick="loadDetailedReport('${exam._id}')">
-              <div class="flex justify-between items-start mb-4">
-                <div class="flex-1">
-                  <h4 class="font-bold text-xl text-cyan-400 mb-2 line-clamp-1">${exam.fileName}</h4>
-                  <p class="text-sm text-slate-400">
-                    ${new Date(exam.createdAt).toLocaleDateString('es', { 
-                      year: 'numeric', month: 'short', day: 'numeric' 
-                    })}
-                  </p>
-                </div>
-                <div class="risk-badge ${riskClass} text-xs ml-4">
-                  ${exam.aiAnalysis?.riesgo || 'N/A'}
-                </div>
-              </div>
-              <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-all mt-4">
-                Ver Análisis Completo
-              </button>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        document.getElementById('history-list').innerHTML = `
-          <div class="col-span-full text-center card p-20 rounded-2xl">
-            <div class="text-6xl mb-6">Warning</div>
-            <h3 class="text-2xl font-bold text-slate-400">Error al cargar historial</h3>
-          </div>
-        `;
-      }
-    }
-
-    async function loadDetailedReport(id) {
-      showTab('upload');
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(API + '/exams/' + id, { headers: { 'x-auth-token': token } });
-        displayDetailedReport(res.data);
-        setTimeout(() => {
-          document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      } catch (err) { 
-        alert('Error al cargar el análisis'); 
-      }
-    }
-
-    showTab('upload');
-  </script>
-
-  <!-- VERIFICACIÓN DE SESIÓN + REDIRECCIÓN CORRECTA -->
-  <script>
-    function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login.html';
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('token');
-      const user = JSON.parse(localStorage.getItem('user') || 'null');
-      const nameEl = document.getElementById('userName');
-
-      // Si NO hay token → redirigir al login (funciona tanto en / como en /index.html)
-      if (!token) {
-        window.location.href = '/login.html';
-        return;
-      }
-
-      // Si hay token → mostrar nombre
-      if (nameEl && user && user.nombre) {
-        nameEl.textContent = user.nombre;
-      } else if (nameEl) {
-        nameEl.textContent = 'Usuario';
-      }
-    });
-  </script>
-
-  <!-- CARGAR auth.js (seguridad adicional) -->
-  <script src="auth.js"></script>
-</body>
-</html>
+      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } :

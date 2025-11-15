@@ -6,6 +6,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const examRoutes = require('./routes/exams');
+const chatRoutes = require('./routes/chat'); // ← NUEVA LÍNEA AGREGADA
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.get(['/', '/dashboard', '/historial', '/perfil'], (req, res) => {
 // ===== RUTAS API (siempre después de las rutas estáticas) =====
 app.use('/api/auth', authRoutes);
 app.use('/api/exams', examRoutes);
+app.use('/api/chat', chatRoutes); // ← NUEVA LÍNEA AGREGADA
 
 // ===== WILDCARD AL FINAL (captura todo lo demás) =====
 app.get('*', (req, res) => {
