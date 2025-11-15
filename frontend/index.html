@@ -284,8 +284,6 @@
       ? 'http://localhost:5000/api'
       : 'https://quantum-analyzer.onrender.com/api';
 
-    // Eliminado HARDCODED_TOKEN
-
     function showTab(tab) {
       document.getElementById('upload-tab').classList.add('hidden');
       document.getElementById('history-tab').classList.add('hidden');
@@ -364,7 +362,6 @@
       const ai = data.aiAnalysis || {};
       const riskClass = ai.riesgo === 'ALTO' ? 'risk-alto' : ai.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
 
-      // EMOJIS REALES (Unicode)
       const sistemas = [
         { key: 'hepatico', title: 'Sistema Hepático', icon: 'Heart' },
         { key: 'cardiovascular', title: 'Sistema Cardiovascular', icon: 'Red Heart' },
@@ -401,7 +398,7 @@
 
           <!-- PATIENT INFO -->
           <div>
-            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
+            <h4 class  class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div class="stat-card p-5 rounded-xl">
                 <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
@@ -559,11 +556,14 @@
     showTab('upload');
   </script>
 
-  <!-- CORREGIDO: SCRIPT DE AUTENTICACIÓN -->
-  <script src="auth.js"></script>
-
-  <!-- MOSTRAR NOMBRE DEL USUARIO -->
+  <!-- FUNCIÓN CERRAR SESIÓN + VERIFICACIÓN DE TOKEN + NOMBRE DE USUARIO -->
   <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('user') || 'null');
       const nameEl = document.getElementById('userName');
@@ -572,7 +572,16 @@
       } else if (nameEl) {
         nameEl.textContent = 'Usuario';
       }
+
+      // Si no hay token → redirige a login
+      const token = localStorage.getItem('token');
+      if (!token && window.location.pathname.includes('index.html')) {
+        window.location.href = 'login.html';
+      }
     });
   </script>
+
+  <!-- CARGAR auth.js (para seguridad adicional) -->
+  <script src="auth.js"></script>
 </body>
 </html>

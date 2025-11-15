@@ -24,6 +24,10 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .btn-loading {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
@@ -45,6 +49,7 @@
             type="email" 
             id="email" 
             required 
+            autocomplete="email"
             class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition"
             placeholder="tu@email.com"
           />
@@ -56,6 +61,7 @@
             type="password" 
             id="password" 
             required 
+            autocomplete="current-password"
             class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition"
             placeholder="••••••••"
           />
@@ -64,7 +70,7 @@
         <button 
           type="submit"
           id="loginBtn"
-          class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3.5 rounded-lg transition flex items-center justify-center gap-3"
+          class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3.5 rounded-lg transition flex items-center justify-center gap-3 disabled:opacity-80 disabled:cursor-not-allowed"
         >
           <span id="btnText">Entrar</span>
           <div id="loader" class="loader hidden"></div>
@@ -78,44 +84,79 @@
   <script>
     const API = 'https://quantum-analyzer.onrender.com/api';
 
+    // === EVITAR ENVÍO DOBLE ===
+    let isSubmitting = false;
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      if (isSubmitting) return;
+
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const errorMsg = document.getElementById('errorMsg');
       const btnText = document.getElementById('btnText');
       const loader = document.getElementById('loader');
+      const loginBtn = document.getElementById('loginBtn');
 
+      // Limpiar errores previos
       errorMsg.classList.add('hidden');
+      isSubmitting = true;
+      loginBtn.disabled = true;
       btnText.textContent = '';
       loader.classList.remove('hidden');
 
       try {
         const res = await fetch(API + '/auth/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || 'Error al iniciar sesión');
+          throw new Error(data.error || 'Error en el servidor. Intenta más tarde.');
         }
 
-        // GUARDAR TOKEN Y USUARIO
+        // === GUARDAR DATOS ===
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // REDIRIGIR
-        window.location.href = 'index.html';
+        // === REDIRECCIÓN SEGURA ===
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 500);
 
       } catch (err) {
+        console.error('Error de login:', err);
         errorMsg.textContent = err.message;
         errorMsg.classList.remove('hidden');
+        
+        // Restaurar botón
         btnText.textContent = 'Entrar';
         loader.classList.add('hidden');
+        loginBtn.disabled = false;
+        isSubmitting = false;
+      }
+    });
+
+    // === SI YA ESTÁ LOGUEADO → IR A INDEX ===
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const now = Math.floor(Date.now() / 1000);
+          if (!payload.exp || payload.exp > now) {
+            window.location.href = 'index.html';
+          }
+        } catch (err) {
+          // Token inválido → quedarse en login
+        }
       }
     });
   </script>
