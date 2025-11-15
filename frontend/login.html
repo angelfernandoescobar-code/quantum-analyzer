@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantum Analyzer - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+    }
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(34, 211, 238, 0.1);
+      border-top: 4px solid #22d3ee;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+  <div class="w-full max-w-md">
+    <!-- LOGO -->
+    <div class="text-center mb-10">
+      <h1 class="text-5xl font-bold text-cyan-400 mb-2">Quantum Analyzer</h1>
+      <p class="text-slate-400">Sistema de Análisis Clínico Inteligente</p>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 shadow-2xl">
+      <h2 class="text-2xl font-bold text-white mb-6 text-center">Iniciar Sesión</h2>
+      
+      <form id="loginForm">
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            required 
+            class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition"
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-300 mb-2">Contraseña</label>
+          <input 
+            type="password" 
+            id="password" 
+            required 
+            class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button 
+          type="submit"
+          id="loginBtn"
+          class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3.5 rounded-lg transition flex items-center justify-center gap-3"
+        >
+          <span id="btnText">Entrar</span>
+          <div id="loader" class="loader hidden"></div>
+        </button>
+      </form>
+
+      <div id="errorMsg" class="mt-4 text-red-400 text-sm text-center hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'https://quantum-analyzer.onrender.com/api';
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const btnText = document.getElementById('btnText');
+      const loader = document.getElementById('loader');
+
+      errorMsg.classList.add('hidden');
+      btnText.textContent = '';
+      loader.classList.remove('hidden');
+
+      try {
+        const res = await fetch(API + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Error al iniciar sesión');
+        }
+
+        // GUARDAR TOKEN Y USUARIO
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // REDIRIGIR
+        window.location.href = 'index.html';
+
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.classList.remove('hidden');
+        btnText.textContent = 'Entrar';
+        loader.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

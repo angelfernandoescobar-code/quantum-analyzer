@@ -89,7 +89,7 @@
     
     .btn-primary:hover:not(:disabled) {
       box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
-      transform: translateY  translateY(-2px);
+      transform: translateY(-2px);
     }
     
     .btn-primary:disabled {
@@ -284,7 +284,7 @@
       ? 'http://localhost:5000/api'
       : 'https://quantum-analyzer.onrender.com/api';
 
-    const HARDCODED_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxMjZmODM4MzhjZDZiODg3ZTU5Y2U0In0sImlhdCI6MTc2MjgxNTg3NSwiZXhwIjoxNzYyOTAyMjc1fQ.lMIJCLKO8gZEhbBb9wQnE3p7AEAr2XuL3xe5e1Dobbk';
+    // Eliminado HARDCODED_TOKEN
 
     function showTab(tab) {
       document.getElementById('upload-tab').classList.add('hidden');
@@ -334,8 +334,9 @@
       }, 700);
 
       try {
+        const token = localStorage.getItem('token');
         const res = await axios.post(API + '/exams/analyze', formData, {
-          headers: { 'x-auth-token': HARDCODED_TOKEN }
+          headers: { 'x-auth-token': token }
         });
         
         clearInterval(interval);
@@ -491,7 +492,8 @@
 
     async function loadHistory() {
       try {
-        const res = await axios.get(API + '/exams', { headers: { 'x-auth-token': HARDCODED_TOKEN } });
+        const token = localStorage.getItem('token');
+        const res = await axios.get(API + '/exams', { headers: { 'x-auth-token': token } });
         const list = document.getElementById('history-list');
         
         if (res.data.length === 0) {
@@ -543,7 +545,8 @@
     async function loadDetailedReport(id) {
       showTab('upload');
       try {
-        const res = await axios.get(API + '/exams/' + id, { headers: { 'x-auth-token': HARDCODED_TOKEN } });
+        const token = localStorage.getItem('token');
+        const res = await axios.get(API + '/exams/' + id, { headers: { 'x-auth-token': token } });
         displayDetailedReport(res.data);
         setTimeout(() => {
           document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });

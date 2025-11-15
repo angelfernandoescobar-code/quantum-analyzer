@@ -2,7 +2,9 @@ services:
   - type: web
     name: quantum-analyzer
     env: node
-    buildCommand: |
-      apt-get update && apt-get install -y chromium chromium-sandbox
-      npm install
+    buildCommand: npm install
     startCommand: npm start
+    plan: free
+    region: oregon
+    envVars:
+      NODE_VERSION: 18
