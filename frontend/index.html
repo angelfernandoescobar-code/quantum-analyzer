@@ -210,7 +210,7 @@
       box-shadow: 0 8px 32px rgba(34, 211, 238, 0.4);
       display: flex;
       align-items: center;
-      justify-center;
+      justify-content: center;
       transition: all 0.3s ease;
       font-size: 32px;
     }
@@ -281,7 +281,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-center;
+      justify-content: center;
       color: white;
       font-size: 20px;
       transition: all 0.2s;
@@ -799,4 +799,213 @@
       ];
 
       const imc = p.imc ? parseFloat(p.imc) : 0;
-      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } :
+      const imcStatus = imc > 25 ? { text: 'Sobrepeso', color: 'text-yellow-400' } : 
+                       imc < 18.5 ? { text: 'Bajo peso', color: 'text-orange-400' } : 
+                       { text: 'Normal', color: 'text-green-400' };
+
+      document.getElementById('results').innerHTML = `
+        <div class="fade-in space-y-10 max-w-6xl mx-auto">
+          
+          <!-- HEADER RESULT -->
+          <div class="card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <h3 class="text-4xl font-bold text-white mb-2">${data.fileName || 'Informe'}</h3>
+              <p class="text-slate-400">15 de noviembre de 2025, ${new Date().toLocaleTimeString('es-HN', { hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
+            <div class="risk-badge ${riskClass}">
+              Riesgo ${ai.riesgo || 'N/A'}
+            </div>
+          </div>
+
+          <!-- PATIENT INFO -->
+          <div>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Información del Paciente</h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Nombre</p>
+                <p class="font-bold text-white text-lg">${p.nombre || p.name || p.fullName || 'No especificado'}</p>
+              </div>
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Edad</p>
+                <p class="font-bold text-white text-lg">${p.edad ? p.edad + ' años' : 'N/A'}</p>
+              </div>
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Sexo</p>
+                <p class="font-bold text-white text-lg">${p.sexo || 'N/A'}</p>
+              </div>
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Peso</p>
+                <p class="font-bold text-white text-lg">${p.peso ? p.peso + ' kg' : 'N/A'}</p>
+              </div>
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">Estatura</p>
+                <p class="font-bold text-white text-lg">${p.estatura ? p.estatura + ' cm' : 'N/A'}</p>
+              </div>
+              <div class="stat-card p-5 rounded-xl">
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-2">IMC</p>
+                <p class="font-bold ${imcStatus.color} text-lg">${p.imc || 'N/A'}</p>
+                <p class="text-xs ${imcStatus.color} mt-1">${imcStatus.text}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUMMARY -->
+          <div>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Resumen General</h4>
+            <div class="card p-8 rounded-2xl">
+              <p class="text-slate-200 leading-relaxed text-lg whitespace-pre-line">${ai.resumen || 'No se generó resumen.'}</p>
+            </div>
+          </div>
+
+          <!-- SYSTEMS -->
+          <div>
+            <h4 class="text-2xl font-bold text-cyan-400 mb-6">Análisis por Sistemas</h4>
+            <div class="space-y-6">
+              ${sistemas.map(s => {
+                const texto = ai.analisis_por_sistemas?.[s.key] || 'No se detectaron alteraciones significativas en este sistema.';
+                return `
+                  <div class="system-section p-8 rounded-xl">
+                    <h5 class="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-3">
+                      <span class="text-2xl">${s.icon}</span>
+                      <span>${s.title}</span>
+                    </h5>
+                    <p class="text-slate-200 leading-relaxed whitespace-pre-line">${texto}</p>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- 4LIFE SIN LÍMITE -->
+          <div>
+            <h4 class="text-2xl font-bold text-amber-400 mb-6">Plan de Suplementación 4Life Research</h4>
+            <div class="fourlife-section p-8 rounded-xl">
+              <p class="text-amber-200 text-sm mb-6 font-medium">
+                <strong>Tratamiento mínimo: 3 meses</strong> para resultados óptimos.
+              </p>
+              <ul class="space-y-4">
+                ${(ai.recomendaciones_4life || []).map(r => {
+                  const [producto, ...beneficioParts] = r.split(':');
+                  const beneficio = beneficioParts.join(':').trim();
+                  return `
+                    <li class="flex items-start gap-4 p-4 rounded-lg bg-black/20">
+                      <span class="text-amber-400 font-bold text-lg flex-shrink-0">•</span>
+                      <div>
+                        <strong class="text-white">${producto.trim()}</strong><br>
+                        <span class="text-slate-300 text-sm">${beneficio || 'Apoyo general al sistema.'}</span>
+                      </div>
+                    </li>
+                  `;
+                }).join('') || '<li class="text-slate-400">No se recomendaron suplementos.</li>'}
+              </ul>
+              <p class="text-xs text-amber-300 mt-6 italic">
+                *Consultar catálogo oficial 4Life para presentaciones y disponibilidad.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    async function loadHistory() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(API + '/exams', { headers: { 'x-auth-token': token } });
+        const list = document.getElementById('history-list');
+        
+        if (res.data.length === 0) {
+          list.innerHTML = `
+            <div class="col-span-full text-center card p-20 rounded-2xl">
+              <div class="text-6xl mb-6 opacity-20">📭</div>
+              <h3 class="text-2xl font-bold text-slate-400 mb-2">No hay análisis previos</h3>
+              <p class="text-slate-500">Los exámenes que analices aparecerán aquí</p>
+            </div>
+          `;
+          return;
+        }
+        
+        list.innerHTML = res.data.map(exam => {
+          const riskClass = exam.aiAnalysis?.riesgo === 'ALTO' ? 'risk-alto' : 
+                           exam.aiAnalysis?.riesgo === 'MEDIO' ? 'risk-medio' : 'risk-bajo';
+          
+          return `
+            <div class="card p-6 rounded-xl history-card" onclick="loadDetailedReport('${exam._id}')">
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                  <h4 class="font-bold text-xl text-cyan-400 mb-2 line-clamp-1">${exam.fileName}</h4>
+                  <p class="text-sm text-slate-400">
+                    ${new Date(exam.createdAt).toLocaleDateString('es', { 
+                      year: 'numeric', month: 'short', day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+                <div class="risk-badge ${riskClass} text-xs ml-4">
+                  ${exam.aiAnalysis?.riesgo || 'N/A'}
+                </div>
+              </div>
+              <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-all mt-4">
+                Ver Análisis Completo
+              </button>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        document.getElementById('history-list').innerHTML = `
+          <div class="col-span-full text-center card p-20 rounded-2xl">
+            <div class="text-6xl mb-6">⚠️</div>
+            <h3 class="text-2xl font-bold text-slate-400">Error al cargar historial</h3>
+          </div>
+        `;
+      }
+    }
+
+    async function loadDetailedReport(id) {
+      showTab('upload');
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(API + '/exams/' + id, { headers: { 'x-auth-token': token } });
+        displayDetailedReport(res.data);
+        setTimeout(() => {
+          document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } catch (err) { 
+        alert('Error al cargar el análisis'); 
+      }
+    }
+
+    showTab('upload');
+  </script>
+
+  <!-- VERIFICACIÓN DE SESIÓN + REDIRECCIÓN CORRECTA -->
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      const nameEl = document.getElementById('userName');
+
+      // Si NO hay token → redirigir al login (funciona tanto en / como en /index.html)
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      // Si hay token → mostrar nombre
+      if (nameEl && user && user.nombre) {
+        nameEl.textContent = user.nombre;
+      } else if (nameEl) {
+        nameEl.textContent = 'Usuario';
+      }
+    });
+  </script>
+
+  <!-- CARGAR auth.js (seguridad adicional) -->
+  <script src="auth.js"></script>
+</body>
+</html>
